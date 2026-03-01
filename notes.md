@@ -6,3 +6,6 @@ Testei uma malha de 16x64 para definir o mapa que por enquanto vai ser no propri
 
 dia 28/02/2026
 porgramei uma movimentação simples do "tiro" e coloquei o system("clear") para limpar o terminal a cada frame do jogo agora vou para outro projeto e em outro momento vou continuar.
+
+dia 29/02/2026
+fiz a movimentação simples do jogo usando algumas bibliotecas que não conhecia mas ao poucos vou aprendendo sobre elas.
