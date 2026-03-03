@@ -9,3 +9,6 @@ porgramei uma movimentação simples do "tiro" e coloquei o system("clear") para
 
 dia 29/02/2026
 fiz a movimentação simples do jogo usando algumas bibliotecas que não conhecia mas ao poucos vou aprendendo sobre elas.
+
+02/03/2026
+Hoje não programei em si mas como eu ainda estou desenvolvendo minha logica tive que recorrer ao gemini então anotei o codigo em portugues sem usar comando como if ou for usando verificação ou looping e etc... basicamente instruções do que eu prciso fazer sem me encinar a fazer.
