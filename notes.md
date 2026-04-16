@@ -12,3 +12,6 @@ fiz a movimentação simples do jogo usando algumas bibliotecas que não conheci
 
 02/03/2026
 Hoje não programei em si mas como eu ainda estou desenvolvendo minha logica tive que recorrer ao gemini então anotei o codigo em portugues sem usar comando como if ou for usando verificação ou looping e etc... basicamente instruções do que eu prciso fazer sem me encinar a fazer.
+
+15/04/2026
+Mudança de planos como o professor de programação dois passou um trabalho(em grupo) para usar a biblioteca allegro para programar um jogo em c como eu ja tenho esse repositorio vou alterar ele para fazer o trabalho e de quebra ja termino esse projeto pesssoal.
