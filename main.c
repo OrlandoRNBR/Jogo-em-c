@@ -1,4 +1,4 @@
-#include <allegro5/allegro5.h>
+#include <allegro5/allegro5.h> 
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_ttf.h>
 #include <stdbool.h>
@@ -7,17 +7,21 @@
 
 
 int main (void){
-    al_init();
-    al_init_font_addon();
-    al_init_ttf_addon();
-    al_init_image_addon();
-    al_install_keyboard();
+    al_init(); //inicia a biblioteca do alegro
+    al_init_font_addon(); //prepara a memória para receber fontes costumizadas
+    al_init_ttf_addon();// permite o alegro renderizar fontes de arquivos ttf
+    al_init_image_addon(); //permite a biblioteca alegro renderizar bitmaps
+    al_install_keyboard(); //informa o sistema operacional que o programa vai capiturar teclas
 
-
+//cria a janela do jogo no padrão largura x altura 
 ALLEGRO_DISPLAY*        disp = al_create_display(1024, 512);
+//cria um temporizador que controla os frames do jog1ao
 ALLEGRO_TIMER*          timer = al_create_timer(1.0/30.0);
+//Cria uma "fila de eventos" onde o código guarda as capturas de eventos e o ticks
 ALLEGRO_EVENT_QUEUE*    queue = al_create_event_queue();
+// falta dovumentar a linha abaixo 
 ALLEGRO_FONT*           font = al_load_font("GODOFWAR.TTF", 30, 0);
+//carrega um sprite da pasta e armazena em imagens.
 ALLEGRO_BITMAP*         image = al_load_bitmap("smiley_face.png");
 
 al_register_event_source(queue, al_get_keyboard_event_source());
