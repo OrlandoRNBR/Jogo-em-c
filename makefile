@@ -1,5 +1,6 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -lallegro_ttf -lallegro_image -lallegro_primitives -lallegro_acodec -lallegro_audioLDLIBS = -lallegro -lallegro_font 
+CFLAGS = -Wall -Wextra 
+LDLIBS = -lallegro -lallegro_font -lallegro_ttf -lallegro_image -lallegro_primitives -lallegro_acodec -lallegro_audio
 
 SRCS = main.c
 

@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <allegro5/allegro5.h> 
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_ttf.h>
@@ -40,9 +41,18 @@ int main (void){
     //Cria uma "fila de eventos" onde o código guarda as capturas de eventos e o ticks
     ALLEGRO_EVENT_QUEUE*    queue = al_create_event_queue();
     // carrega a fonte selecionada o primeiro numero (30) é o tamanho e o segunndo (0) alterações que a fonte pode recerber mas não precisa de nenhum
-    ALLEGRO_FONT*           font = al_load_font("GODOFWAR.TTF", 30, 0);
+    ALLEGRO_FONT*           font = al_load_font("Fonts/GODOFWAR.TTF", 30, 0);
+    if (font == NULL) {
+        printf("ERRO: Nao foi possivel carregar a fonte GODOFWAR!\n");
+        return -1; // Encerra o programa de forma segura
+    }
     //carrega um sprite da pasta e armazena em imagens.
-    ALLEGRO_BITMAP*         image = al_load_bitmap("smiley_face.png");
+    ALLEGRO_BITMAP*         image = al_load_bitmap("sprites/smiley_face.png");
+    if (image == NULL) {
+        printf("ERRO: Nao foi possivel carregar o smiley_face!\n");
+        return -1; // Encerra o programa de forma segura
+    }
+
 
     //diz para o queue para prestar atenção nos imputs do teclado
     al_register_event_source(queue, al_get_keyboard_event_source());
