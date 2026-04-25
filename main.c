@@ -4,14 +4,73 @@
 #include <allegro5/allegro_ttf.h>
 #include <stdbool.h>
 
+typedef struct tela{
+    int largura;
+    int altura;
+}tela;
+
+
 //player.h possivel biblioteca feita só com funções de controle do player
 typedef struct player{//typedef para definir o player dps vai ter um de inimigos
-    //posição do player
+    //posição e deslocamento do player
     int eixox; 
     int eixoy;
+    int speed;
     //hp do player
     int hp;
 }player;
+
+player p = {30, 20, 30, 3}; //declaração do player posição eixo x, posição eixo y, vidas
+int movendo = 0; //0 parado, 1 pra cima, 2 pra direita, 3 pra baixo, 4 pra esquerda 
+int ultima_tecla_precionada = 0;
+int tamanhoplayer = 32;
+tela t = {1024, 512};
+
+void receber_teclas (int teclas){
+    switch (teclas)
+    {
+    case ALLEGRO_KEY_D:
+        ultima_tecla_precionada = ALLEGRO_KEY_D;
+        if(p.eixox <= t.largura - 7*tamanhoplayer){
+            p.eixox += p.speed;
+            movendo = 2;
+        }
+        break;
+    case ALLEGRO_KEY_A:
+        ultima_tecla_precionada = ALLEGRO_KEY_A;
+        if(p.eixox >= 0){
+            p.eixox -= p.speed;
+            movendo = 4;
+        }
+        break;
+    case ALLEGRO_KEY_S:
+        ultima_tecla_precionada = ALLEGRO_KEY_S;
+        if(p.eixoy <= t.altura - 7*tamanhoplayer){
+            p.eixoy += p.speed;
+            movendo = 3;
+        }
+        break;
+    case ALLEGRO_KEY_W:
+        ultima_tecla_precionada = ALLEGRO_KEY_W;
+        if(p.eixoy >= 0){
+            p.eixoy -= p.speed;
+            movendo = 1;
+        }
+        break;
+    default:
+        break;
+    }
+}
+/*
+  if(event.type == ALLEGRO_EVENT_KEY_DOWN){
+            //se for d soma no exio x se for a subtrai no eixo x criando a movimentação horizontal 
+            if(event.keyboard.keycode == ALLEGRO_KEY_D)  p.eixox += 10;
+            if(event.keyboard.keycode == ALLEGRO_KEY_A)  p.eixox -= 10;
+            // se for s soma no eixo y e se for w subtrai do eixo y criando o mavimento vertical
+            if(event.keyboard.keycode == ALLEGRO_KEY_S)  p.eixoy += 10;
+            if(event.keyboard.keycode == ALLEGRO_KEY_W)  p.eixoy -= 10;
+        //quero mudar pois precisa ficar clicando pro buneco andar 
+        }*/
 
 //al maneger, ṕossivel biblioteca de gerenciamento das funções allegro. 
 void al_init_all(){
@@ -35,7 +94,7 @@ void al_destroy_all(ALLEGRO_DISPLAY* disp, ALLEGRO_TIMER* timer, ALLEGRO_EVENT_Q
 int main (void){
     al_init_all(); //todos os inits em uma unica função!
     //cria a janela do jogo no padrão largura x altura 
-    ALLEGRO_DISPLAY*        disp = al_create_display(1024, 512);
+    ALLEGRO_DISPLAY*        disp = al_create_display(t.largura, t.altura);
     //cria um temporizador que controla os frames do jogo atraves de ticks que apitão até 30 vezes por segundo
     ALLEGRO_TIMER*          timer = al_create_timer(1.0/30.0);
     //Cria uma "fila de eventos" onde o código guarda as capturas de eventos e o ticks
@@ -61,31 +120,44 @@ int main (void){
     //diz para a fila prestar atenção nos ticks
     al_register_event_source(queue, al_get_timer_event_source(timer));
 
-    player p = {30, 20, 3}; // declaração do player possivelmete vai ser alterado
+    //player p = {30, 20, 3}; // declaração do player possivelmete vai ser alterado
     
     int flags = 0;//na hora de renderizar a imagem ele usa essa variavel para saber se a imagem deve ser alterada.
 
-    ALLEGRO_EVENT event; // não sei o que faz ainda
+    ALLEGRO_EVENT evento_primario; // armazena os eventos do jogo
+    ALLEGRO_EVENT evento_secundario; //armazena eventos segcundarios do jogo
     al_start_timer(timer); //inicia o rologio 
     while(1){ //looping principal do jogo
-      al_wait_for_event(queue, &event); //pausa o loping até algun evento aocntecer
+      al_wait_for_event(queue, &evento_primario); //pausa o loping até algun evento aocntecer
 
      // verifica se p evento que acabou de acontecer foi fechar a janela
-      if(event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) break;
+      if(evento_primario.type == ALLEGRO_EVENT_DISPLAY_CLOSE) break;
 
         //verifica se uma tecla foi pricionada
-        if(event.type == ALLEGRO_EVENT_KEY_DOWN){
+        if(evento_primario.type == ALLEGRO_EVENT_KEY_DOWN){
+            //do{
+                al_wait_for_event(queue, &evento_secundario);
+                receber_teclas(evento_primario.keyboard.keycode);
+            /*
             //se for d soma no exio x se for a subtrai no eixo x criando a movimentação horizontal 
             if(event.keyboard.keycode == ALLEGRO_KEY_D)  p.eixox += 10;
             if(event.keyboard.keycode == ALLEGRO_KEY_A)  p.eixox -= 10;
             // se for s soma no eixo y e se for w subtrai do eixo y criando o mavimento vertical
             if(event.keyboard.keycode == ALLEGRO_KEY_S)  p.eixoy += 10;
             if(event.keyboard.keycode == ALLEGRO_KEY_W)  p.eixoy -= 10;
-        /*quero mudar pois precisa ficar clicando pro buneco andar */
+            //quero mudar pois precisa ficar clicando pro buneco andar 
+            */
+           if(evento_secundario.type == ALLEGRO_EVENT_KEY_UP){
+                if(evento_primario.keyboard.keycode == ultima_tecla_precionada){
+                    movendo = 0;
+                    //break;
+                }
+            }
+            //}while(movendo != 0);
         }
         /*esse if verifica se houve um tick E a fila (queue event) estiver vazio esse bloco aocontece
         Isso garante que se o pc travar ou a fila estiver cheia não vai entrar um novo elemento na fila.*/ 
-        if(event.type == ALLEGRO_EVENT_TIMER && al_is_event_queue_empty(queue)){
+        if(evento_primario.type == ALLEGRO_EVENT_TIMER && al_is_event_queue_empty(queue)){
             //pinta o fundo de uma cor provavelmente vai sair
             al_clear_to_color(al_map_rgb(10, 218, 250));
             //desenha a imagem amrmazenada nessas coordenadas flags esta ai para não alterar a imagem
