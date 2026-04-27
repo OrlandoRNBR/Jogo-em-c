@@ -35,9 +35,9 @@ typedef struct teclas{
 
 
 
-void printar_player(ALLEGRO_BITMAP* image, int teclas, player p, int si){
+void printar_player(ALLEGRO_BITMAP* image, int tecla, player p, int si){
     
-    switch (teclas){
+    switch (tecla){
     case ALLEGRO_KEY_D:
         al_draw_bitmap_region(image, p.tamanho*si, p.tamanho*3, p.tamanho, p.tamanho, p.eixox, p.eixoy, 0);
         break;
@@ -58,8 +58,8 @@ void printar_player(ALLEGRO_BITMAP* image, int teclas, player p, int si){
 }
 
 
-void receber_teclas (int teclas, player* p, int *ultima_tecla_precionada, int* movendo, tela t,teclas* tecla){
-    switch (teclas)
+void receber_teclas (int tecla, player* p, int *ultima_tecla_precionada, int* movendo, tela t,teclas* teclas){
+    switch (tecla)
     {
     case ALLEGRO_KEY_D:
         *ultima_tecla_precionada = ALLEGRO_KEY_D;
@@ -126,7 +126,7 @@ void al_destroy_all(ALLEGRO_DISPLAY* disp, ALLEGRO_TIMER* timer, ALLEGRO_EVENT_Q
 int main (void){
     al_init_all(); //todos os inits em uma unica função!
 
-    player p = {30, 20, 1, 3, 32}; //declaração do player posição eixo x, posição eixo y, vidas
+    player p = {30, 20, 5, 3, 32}; //declaração do player posição eixo x, posição eixo y, vidas
     int movendo = 0; //0 parado, 1 pra cima, 2 pra direita, 3 pra baixo, 4 pra esquerda 
     int ultima_tecla_precionada = 0;
     tela t = {1024, 512};
@@ -172,10 +172,28 @@ int main (void){
       al_wait_for_event(queue, &evento_primario); //pausa o loping até algun evento aocntecer
 
      // verifica se p evento que acabou de acontecer foi fechar a janela
-      if(evento_primario.type == ALLEGRO_EVENT_DISPLAY_CLOSE) break;
+      if(evento_primario.type == ALLEGRO_EVENT_DISPLAY_CLOSE || evento_primario.keyboard.keycode == ALLEGRO_KEY_ESCAPE) break;
 
-        //verifica se uma tecla foi pricionada
-        if(evento_primario.type == ALLEGRO_EVENT_KEY_DOWN){
+
+      if(evento_primario.type == ALLEGRO_EVENT_KEY_DOWN){
+        switch(evento_primario.keyboard.keycode){
+            case ALLEGRO_KEY_W: tecla.w = true; break;
+            case ALLEGRO_KEY_D: tecla.d = true; break;
+            case ALLEGRO_KEY_S: tecla.s = true; break;
+            case ALLEGRO_KEY_A: tecla.a = true; break;
+        }
+        ultima_tecla_precionada = evento_primario.keyboard.keycode;
+      }
+      if(evento_primario.type == ALLEGRO_EVENT_KEY_UP){
+        switch(evento_primario.keyboard.keycode){
+            case ALLEGRO_KEY_W: tecla.w = false; break;
+            case ALLEGRO_KEY_D: tecla.d = false; break;
+            case ALLEGRO_KEY_S: tecla.s = false; break;
+            case ALLEGRO_KEY_A: tecla.a = false; break;
+      }
+    }
+      //verifica se uma tecla foi pricionada
+        /*if(evento_primario.type == ALLEGRO_EVENT_KEY_DOWN){
 
             do{
                 al_wait_for_event(queue, &evento_secundario);
@@ -192,19 +210,33 @@ int main (void){
                 }
             }
             }while(movendo != 0);
-        }
+        }*/
         /*esse if verifica se houve um tick E a fila (queue event) estiver vazio esse bloco aocontece
-        Isso garante que se o pc travar ou a fila estiver cheia não vai entrar um novo elemento na fila.
+        Isso garante que se o pc travar ou a fila estiver cheia não vai entrar um novo elemento na fila.*/
         if(evento_primario.type == ALLEGRO_EVENT_TIMER && al_is_event_queue_empty(queue)){
+           
+           if(tecla.w && p.eixoy >= 0) p.eixoy -= p.speed;
+           if(tecla.s && p.eixoy <= t.altura - p.tamanho) p.eixoy += p.speed;
+           if(tecla.d && p.eixox <= t.largura - p.tamanho) p.eixox += p.speed;
+           if(tecla.a && p.eixox >= 0) p.eixox -= p.speed;
+           
+
+            if(tecla.w || tecla.a || tecla.d || tecla.s){
+                si = (si+1)%5;
+            } else{
+                si = 0;
+            }
+
             //pinta o fundo de uma cor provavelmente vai sair
             al_clear_to_color(al_map_rgb(10, 218, 250));
             //desenha a imagem amrmazenada nessas coordenadas flags esta ai para não alterar a imagem
-            al_draw_bitmap(image, p.eixox, p.eixoy, flags);
+            //al_draw_bitmap(image, p.eixox, p.eixoy, flags);
+            printar_player(image, ultima_tecla_precionada, p, si);
             //pega tudo dezenhado e coloca na janela/tela
             al_flip_display();
-        }*/
+        }
+        
     }
-
-al_destroy_all(disp, timer, queue, font, image); //roda todas as finções de liberação da memoria!
-
+    al_destroy_all(disp, timer, queue, font, image); //roda todas as finções de liberação da memoria!
+    
 }
