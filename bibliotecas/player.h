@@ -1,3 +1,7 @@
+#ifndef PLAYER_H
+#define PLAYER_H
+
+
 #include <stdio.h>
 #include <allegro5/allegro5.h> 
 #include <allegro5/allegro_image.h>
@@ -42,3 +46,5 @@ void processar_teclas (teclas *tecla, player* p, tela* t);
 void animacao_player(int * si, teclas* tecla);
 
 void printar_tela(teclas* tecla, player * p, tela* t, int *si, ALLEGRO_BITMAP* image,int ultima_tecla_precionada);
+
+#endif

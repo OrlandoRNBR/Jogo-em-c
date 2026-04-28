@@ -68,7 +68,7 @@ void printar_tela(teclas* tecla, player * p, tela* t, int *si, ALLEGRO_BITMAP* i
     //faz toda a parte visual do jogo
      processar_teclas(&*tecla, &*p, &*t); //desloca o player na tela
      animacao_player(&*si, &*tecla); //faz animação do player
-     al_clear_to_color(al_map_rgb(10, 218, 250)); // pinta o fundo na cor do codigo RGB
+     //al_clear_to_color(al_map_rgb(10, 218, 250)); // pinta o fundo na cor do codigo RGB
      printar_player(image, ultima_tecla_precionada, *p, *si); // printa o player
      al_flip_display(); //pega tudo e mostra na tela
 }
