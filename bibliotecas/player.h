@@ -36,7 +36,7 @@ typedef struct teclas{ //struct que armazena se as teclas estão sendo precionad
 
 bool colisao(int x, int y, int array_map[32][32], int tamanho);
 
-void printar_player(ALLEGRO_BITMAP* image, int tecla, player p, int si);
+void printar_player(ALLEGRO_BITMAP* image, teclas* tecla, player p, int si);
 
 void receber_teclas (ALLEGRO_EVENT *evento_primario, int *ultima_tecla_precionada, teclas* tecla, int* i_mapa);
 
@@ -44,6 +44,6 @@ void processar_teclas (teclas *tecla, player* p, int array_map[32][32]);
 
 void animacao_player(int * si, teclas* tecla);
 
-void printar_tela(teclas* tecla, player * p, tela* t, int *si, ALLEGRO_BITMAP* image,int ultima_tecla_precionada, int array_map[32][32]);
+void printar_tela(teclas* tecla, player* p, tela* t, int* si,ALLEGRO_BITMAP* image, int array_map[32][32]);
 
 #endif

@@ -8,17 +8,15 @@
 #include "bibliotecas/auxiliar.h"
 
 
-
 int main (void){
     al_init_all(); //todos os inits em uma unica função!
 
     player p = {30, 20, 5, 3, 32}; //declaração do player posição eixo x, posição eixo y, vidas
     map chao = {0,0,256, 128};
     int ultima_tecla_precionada = 0;
-    int flags = 0;//na hora de renderizar a imagem ele usa essa variavel para saber se a imagem deve ser alterada.
     tela t = {512, 512};
     int si = 0;
-    teclas tecla = {false, false, false, false};
+    teclas tecla = {false, false, false, false, false, false, false, false};
     int array_map[32][32];
     int i_mapa = 0;
     int i_mapa_anterior = -1;
@@ -74,7 +72,7 @@ int main (void){
         if(evento_primario.type == ALLEGRO_EVENT_TIMER && al_is_event_queue_empty(queue)) {
             criar_mapa(&i_mapa,&i_mapa_anterior, array_map, parede, mapa, chao);
            
-            printar_tela(&tecla, &p, &t, &si, image, ultima_tecla_precionada, array_map); //um misto de funções que fica atualizando a tela a cada tick
+            printar_tela(&tecla, &p, &t, &si, image, array_map); //um misto de funções que fica atualizando a tela a cada tick
         
         }
        

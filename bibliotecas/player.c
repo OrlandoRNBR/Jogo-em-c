@@ -26,7 +26,24 @@ bool colisao(int x, int y ,int array_map[32][32], int tamanho ){
     return false;
 }
 
+void printar_player(ALLEGRO_BITMAP* image, teclas* tecla, player p, int si){
+    int direcao_y; // linha do spritesheet
 
+    // prioridade: define qual direção mostrar quando várias teclas estão ativas
+    if(tecla->s)      direcao_y = 0; // baixo  (frente)
+    else if(tecla->a) direcao_y = 1; // esquerda
+    else if(tecla->w) direcao_y = 2; // cima
+    else if(tecla->d) direcao_y = 3; // direita
+    else              direcao_y = 0; // parado → fica de frente
+
+    al_draw_bitmap_region(image,
+        p.tamanho * si,
+        p.tamanho * direcao_y,
+        p.tamanho, p.tamanho,
+        p.eixox, p.eixoy, 0);
+}
+
+/*
 void printar_player(ALLEGRO_BITMAP* image, int tecla, player p, int si){
     switch (tecla){ //seleciona as teclas pecionadas
     case ALLEGRO_KEY_D: //preinta o player com animação indo para a direita
@@ -46,7 +63,7 @@ void printar_player(ALLEGRO_BITMAP* image, int tecla, player p, int si){
         break;
     }
 }
-
+*/
 
 
 void receber_teclas (ALLEGRO_EVENT *evento_primario, int *ultima_tecla_precionada, teclas* tecla, int * i_mapa){ //rebe as teclas do usuario e mostra se esta ou não sendo precionada
@@ -123,11 +140,11 @@ void animacao_player(int * si, teclas* tecla){ // manipula a variavel si para na
 }
 
 
-void printar_tela(teclas* tecla, player * p, tela* t, int *si, ALLEGRO_BITMAP* image,int ultima_tecla_precionada, int array_map[32][32]){
+void printar_tela(teclas* tecla, player* p, tela* t, int *si, ALLEGRO_BITMAP* image, int array_map[32][32]){
     //faz toda a parte visual do jogo
      processar_teclas(&*tecla, &*p, array_map); //desloca o player na tela
      animacao_player(&*si, &*tecla); //faz animação do player
      //al_clear_to_color(al_map_rgb(10, 218, 250)); // pinta o fundo na cor do codigo RGB
-     printar_player(image, ultima_tecla_precionada, *p, *si); // printa o player
+     printar_player(image, tecla, *p, *si); // printa o player
      al_flip_display(); //pega tudo e mostra na tela
 }
