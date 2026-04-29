@@ -13,90 +13,36 @@ void printar_chao(ALLEGRO_BITMAP* mapa,map chao){
     al_draw_bitmap_region(mapa, 0, 0, chao.largura, chao.altura, chao.eixox, chao.eixoy+(3*128), 0);
 }
 
-void criar_mapa(int* i_mapa, int array_map[32][32],ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP* mapa, map chao){
-        if(*i_mapa == 0){
-            FILE* mapa_default = fopen("maps/mapa_default.txt", "r");
-            al_clear_to_color(al_map_rgb(90, 105, 136)); // pinta o fundo na cor do codigo RGB
-            printar_chao(mapa, chao);
-                for(int i = 0;i < 32;i++){
-                    for(int j = 0; j < 32;j++){
-                        fscanf(mapa_default, "%d", &array_map[i][j]);
-                    }
-                }
+void criar_mapa(int* i_mapa,int* i_mapa_anterior, int array_map[32][32],ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP* mapa, map chao){
+        if(*i_mapa_anterior != *i_mapa){
+            const char* nomes[] = {
+            "maps/mapa_default.txt",
+            "maps/mapa1.txt",
+            "maps/mapa2.txt",
+            "maps/mapa3.txt"
+        };
         
-            for(int i = 0; i < 32;i++){
-                for(int j = 0; j < 32; j++){
-                    int valor = array_map[i][j];
-                    if(valor >=1 && valor <= 9){
-                        al_draw_bitmap(parede[valor], j*16, i*16, 0);
-                    }
-                }
-            }
-        }
+            FILE* mapa_default = fopen(nomes[*i_mapa], "r");
+            if(mapa_default){
 
-        if(*i_mapa == 1){
-            FILE* mapa_default = fopen("maps/mapa1.txt", "r");
-            al_clear_to_color(al_map_rgb(90, 105, 136)); // pinta o fundo na cor do codigo RGB
-            printar_chao(mapa, chao);
-                for(int i = 0;i < 32;i++){
-                    for(int j = 0; j < 32;j++){
+                for(int i = 0;i < 32;i++)
+                    for(int j = 0; j < 32;j++)
                         fscanf(mapa_default, "%d", &array_map[i][j]);
-                    }
-                }
-        
-            for(int i = 0; i < 32;i++){
-                for(int j = 0; j < 32; j++){
-                    int valor = array_map[i][j];
-                    if(valor >=1 && valor <= 9){
-                        al_draw_bitmap(parede[valor], j*16, i*16, 0);
-                    }
-                }
-            }
-             fclose(mapa_default);
-        }
 
-        if(*i_mapa == 2){
-            FILE* mapa_default = fopen("maps/mapa2.txt", "r");
-            al_clear_to_color(al_map_rgb(90, 105, 136)); // pinta o fundo na cor do codigo RGB
-            printar_chao(mapa, chao);
-                for(int i = 0;i < 32;i++){
-                    for(int j = 0; j < 32;j++){
-                        fscanf(mapa_default, "%d", &array_map[i][j]);
+                       fclose(mapa_default);
+            }        
+                    *i_mapa_anterior = *i_mapa;
+        }  
+        al_clear_to_color(al_map_rgb(90, 105, 136)); // pinta o fundo na cor do codigo RGB
+        printar_chao(mapa, chao);
+        for(int i = 0; i < 32;i++){
+            for(int j = 0; j < 32; j++){
+                int valor = array_map[i][j];
+                if(valor >=1 && valor <= 9){
+                    al_draw_bitmap(parede[valor], j*16, i*16, 0);
                     }
-                }
-        
-            for(int i = 0; i < 32;i++){
-                for(int j = 0; j < 32; j++){
-                    int valor = array_map[i][j];
-                    if(valor >=1 && valor <= 9){
-                        al_draw_bitmap(parede[valor], j*16, i*16, 0);
-                    }
-                }
-            }
-             fclose(mapa_default);
-        }
-        
-        if(*i_mapa == 3) {
-            FILE* mapa_default  = fopen("maps/mapa3.txt", "r");
-            al_clear_to_color(al_map_rgb(90, 105, 136)); // pinta o fundo na cor do codigo RGB
-            printar_chao(mapa, chao);
-                for(int i = 0;i < 32;i++){
-                    for(int j = 0; j < 32;j++){
-                        fscanf(mapa_default, "%d", &array_map[i][j]);
-                    }
-                }
-        
-            for(int i = 0; i < 32;i++){
-                for(int j = 0; j < 32; j++){
-                    int valor = array_map[i][j];
-                    if(valor >=1 && valor <= 9){
-                        al_draw_bitmap(parede[valor], j*16, i*16, 0);
-                    }
-                }
-            }
-             fclose(mapa_default);
-        }
-
+            } 
+    }
 }
 
 //al maneger, ṕossivel biblioteca de gerenciamento das funções allegro. 

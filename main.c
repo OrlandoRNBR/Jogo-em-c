@@ -21,6 +21,7 @@ int main (void){
     teclas tecla = {false, false, false, false};
     int array_map[32][32];
     int i_mapa = 0;
+    int i_mapa_anterior = -1;
     //cria a janela do jogo no padrão largura x altura 
     ALLEGRO_DISPLAY*        disp = al_create_display(t.largura, t.altura);
     //cria um temporizador que controla os frames do jogo atraves de ticks que apitão até 30 vezes por segundo
@@ -71,7 +72,7 @@ int main (void){
         Isso garante que se o pc travar ou a fila estiver cheia não vai entrar um novo elemento na fila.*/
         
         if(evento_primario.type == ALLEGRO_EVENT_TIMER && al_is_event_queue_empty(queue)) {
-            criar_mapa(&i_mapa, array_map, parede, mapa, chao);
+            criar_mapa(&i_mapa,&i_mapa_anterior, array_map, parede, mapa, chao);
            
             printar_tela(&tecla, &p, &t, &si, image, ultima_tecla_precionada, array_map); //um misto de funções que fica atualizando a tela a cada tick
         

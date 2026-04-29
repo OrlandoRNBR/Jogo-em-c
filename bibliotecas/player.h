@@ -31,7 +31,7 @@ typedef struct teclas{ //struct que armazena se as teclas estão sendo precionad
     bool t1;
     bool t2;
     bool t3;
-    bool t0
+    bool t0;
 }teclas;
 
 bool colisao(int x, int y, int array_map[32][32], int tamanho);

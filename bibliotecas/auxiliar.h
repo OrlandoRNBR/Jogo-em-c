@@ -5,8 +5,6 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_ttf.h>
 #include <stdbool.h>
-#include "auxiliar.h"
-
 
 typedef struct masps{
     int eixox;
@@ -22,7 +20,7 @@ typedef struct tela{
 
 void printar_chao(ALLEGRO_BITMAP* mapa,map chao);
 
-void criar_mapa(int* i_mapa, int array_map[32][32],ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP* mapa, map chao);
+void criar_mapa(int* i_mapa,int* i_mapa_anterior, int array_map[32][32],ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP* mapa, map chao);
 
 void al_init_all();
 
