@@ -4,6 +4,27 @@
 #include <allegro5/allegro_ttf.h>
 #include <stdbool.h>
 #include "player.h"
+#include "auxiliar.h"
+
+
+bool colisao(int x, int y ,int array_map[32][32], int tamanho ){
+    
+    int margem_cima = 8;
+    int margem_baixo = 4;
+    
+    int esquerda = (x + margem_cima) / 16;
+    int direita  = (x + tamanho - margem_baixo - 1) / 16;
+    int topo     = (y + margem_cima) / 16;
+    int baixo    = (y + tamanho - margem_baixo - 1) / 16;
+
+    // verifica os 4 cantos
+    if(array_map[topo][esquerda] != 0) return true;
+    if(array_map[topo][direita]  != 0) return true;
+    if(array_map[baixo][esquerda] != 0) return true;
+    if(array_map[baixo][direita]  != 0) return true;
+
+    return false;
+}
 
 
 void printar_player(ALLEGRO_BITMAP* image, int tecla, player p, int si){
@@ -28,13 +49,17 @@ void printar_player(ALLEGRO_BITMAP* image, int tecla, player p, int si){
 
 
 
-void receber_teclas (ALLEGRO_EVENT *evento_primario, int *ultima_tecla_precionada, teclas* tecla){ //rebe as teclas do usuario e mostra se esta ou não sendo precionada
+void receber_teclas (ALLEGRO_EVENT *evento_primario, int *ultima_tecla_precionada, teclas* tecla, int * i_mapa){ //rebe as teclas do usuario e mostra se esta ou não sendo precionada
      if(evento_primario->type == ALLEGRO_EVENT_KEY_DOWN){ // se alguma tecla for precionada marca como verdadeiro
         switch(evento_primario->keyboard.keycode){
             case ALLEGRO_KEY_W: tecla->w = true; break;
             case ALLEGRO_KEY_D: tecla->d = true; break;
             case ALLEGRO_KEY_S: tecla->s = true; break;
             case ALLEGRO_KEY_A: tecla->a = true; break;
+            case ALLEGRO_KEY_1: tecla->t1 = true; break;
+            case ALLEGRO_KEY_2: tecla->t2 = true; break;
+            case ALLEGRO_KEY_3: tecla->t3 = true; break;
+            case ALLEGRO_KEY_0: tecla->t0 = true; break;
         }
         *ultima_tecla_precionada = evento_primario->keyboard.keycode; //armazena a ultima tecla precionada
       }
@@ -44,16 +69,50 @@ void receber_teclas (ALLEGRO_EVENT *evento_primario, int *ultima_tecla_precionad
             case ALLEGRO_KEY_D: tecla->d = false; break;
             case ALLEGRO_KEY_S: tecla->s = false; break;
             case ALLEGRO_KEY_A: tecla->a = false; break;
+             case ALLEGRO_KEY_1: tecla->t1 = false; break;
+            case ALLEGRO_KEY_2: tecla->t2 = false; break;
+            case ALLEGRO_KEY_3: tecla->t3 = false; break;
+            case ALLEGRO_KEY_0: tecla->t0 = false; break;
       }
     }
+
+    if(tecla->t1){
+            *i_mapa = 1;
+        }else if(tecla->t2){
+            *i_mapa = 2;
+        }else if(tecla->t3){
+            *i_mapa = 3;
+        }else if(tecla->t0){
+            *i_mapa = 0;
+        }
 }
 
-void processar_teclas (teclas *tecla, player* p, tela* t){ //enquanto as teclas são verdadeiras ele soma o speed do personagem
+    void processar_teclas(teclas *tecla, player* p, int array_map[32][32]){
+    
+    int novo_x = p->eixox;
+    int novo_y = p->eixoy;
+
+    if(tecla->w) novo_y -= p->speed;
+    if(tecla->s) novo_y += p->speed;
+    if(tecla->d) novo_x += p->speed;
+    if(tecla->a) novo_x -= p->speed;
+
+    // colisão eixo Y
+    if(!colisao(p->eixox, novo_y, array_map, p->tamanho)){
+        p->eixoy = novo_y;
+    }
+
+    // colisão eixo X
+    if(!colisao(novo_x, p->eixoy, array_map, p->tamanho)){
+        p->eixox = novo_x;
+    }
+}
+/*void processar_teclas (teclas *tecla, player* p, tela* t){ //enquanto as teclas são verdadeiras ele soma o speed do personagem
     if(tecla->w && p->eixoy >= 0) p->eixoy -= p->speed;
     if(tecla->s && p->eixoy <= t->altura - p->tamanho) p->eixoy += p->speed;
     if(tecla->d && p->eixox <= t->largura - p->tamanho) p->eixox += p->speed;
     if(tecla->a && p->eixox >= 0) p->eixox -= p->speed;
-}
+}*/
 
 void animacao_player(int * si, teclas* tecla){ // manipula a variavel si para navegar pelo sprite do personagem
         if(tecla->w || tecla->a || tecla->d || tecla->s){
@@ -64,9 +123,9 @@ void animacao_player(int * si, teclas* tecla){ // manipula a variavel si para na
 }
 
 
-void printar_tela(teclas* tecla, player * p, tela* t, int *si, ALLEGRO_BITMAP* image,int ultima_tecla_precionada){
+void printar_tela(teclas* tecla, player * p, tela* t, int *si, ALLEGRO_BITMAP* image,int ultima_tecla_precionada, int array_map[32][32]){
     //faz toda a parte visual do jogo
-     processar_teclas(&*tecla, &*p, &*t); //desloca o player na tela
+     processar_teclas(&*tecla, &*p, array_map); //desloca o player na tela
      animacao_player(&*si, &*tecla); //faz animação do player
      //al_clear_to_color(al_map_rgb(10, 218, 250)); // pinta o fundo na cor do codigo RGB
      printar_player(image, ultima_tecla_precionada, *p, *si); // printa o player

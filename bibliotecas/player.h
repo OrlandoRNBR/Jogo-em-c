@@ -7,13 +7,8 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_ttf.h>
 #include <stdbool.h>
+#include "auxiliar.h"
 
-
-
-typedef struct tela{
-    int largura; //largura da tela
-    int altura; //altura da tela
-}tela;
 
 
 //player.h possivel biblioteca feita só com funções de controle do player
@@ -33,18 +28,22 @@ typedef struct teclas{ //struct que armazena se as teclas estão sendo precionad
     bool d;
     bool s;
     bool a;
+    bool t1;
+    bool t2;
+    bool t3;
+    bool t0
 }teclas;
 
-
+bool colisao(int x, int y, int array_map[32][32], int tamanho);
 
 void printar_player(ALLEGRO_BITMAP* image, int tecla, player p, int si);
 
-void receber_teclas (ALLEGRO_EVENT *evento_primario, int *ultima_tecla_precionada, teclas* tecla);
+void receber_teclas (ALLEGRO_EVENT *evento_primario, int *ultima_tecla_precionada, teclas* tecla, int* i_mapa);
 
-void processar_teclas (teclas *tecla, player* p, tela* t);
+void processar_teclas (teclas *tecla, player* p, int array_map[32][32]);
 
 void animacao_player(int * si, teclas* tecla);
 
-void printar_tela(teclas* tecla, player * p, tela* t, int *si, ALLEGRO_BITMAP* image,int ultima_tecla_precionada);
+void printar_tela(teclas* tecla, player * p, tela* t, int *si, ALLEGRO_BITMAP* image,int ultima_tecla_precionada, int array_map[32][32]);
 
 #endif
