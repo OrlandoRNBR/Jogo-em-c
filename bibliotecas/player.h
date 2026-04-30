@@ -44,6 +44,6 @@ void processar_teclas (teclas *tecla, player* p, int array_map[32][32]);
 
 void animacao_player(int * si, teclas* tecla);
 
-void printar_tela(teclas* tecla, player* p, tela* t, int* si,ALLEGRO_BITMAP* image, int array_map[32][32]);
+void printar_tela(teclas* tecla, player* p, int* si,ALLEGRO_BITMAP* image, int array_map[32][32]);
 
 #endif

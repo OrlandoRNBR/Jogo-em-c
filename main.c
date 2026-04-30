@@ -11,7 +11,7 @@
 int main (void){
     al_init_all(); //todos os inits em uma unica função!
 
-    player p = {30, 20, 5, 3, 32}; //declaração do player posição eixo x, posição eixo y, vidas
+    player p = {16, 16, 5, 3, 32}; //declaração do player posição eixo x, posição eixo y, vidas
     map chao = {0,0,256, 128};
     int ultima_tecla_precionada = 0;
     tela t = {512, 512};
@@ -20,6 +20,8 @@ int main (void){
     int array_map[32][32];
     int i_mapa = 0;
     int i_mapa_anterior = -1;
+
+
     //cria a janela do jogo no padrão largura x altura 
     ALLEGRO_DISPLAY*        disp = al_create_display(t.largura, t.altura);
     //cria um temporizador que controla os frames do jogo atraves de ticks que apitão até 30 vezes por segundo
@@ -32,6 +34,8 @@ int main (void){
         printf("ERRO: Nao foi possivel carregar a fonte GODOFWAR!\n");
         return -1; // Encerra o programa de forma segura
     }
+
+    
     //carrega um sprite da pasta e armazena em imagens.
     ALLEGRO_BITMAP*         image = al_load_bitmap("sprites/sprites.png");
     ALLEGRO_BITMAP*         mapa = al_load_bitmap("sprites/chão.png");
@@ -47,12 +51,17 @@ int main (void){
     parede [8] = al_load_bitmap("sprites/parede8.png");
     parede [9] = al_load_bitmap("sprites/parede9.png");
 
-    
 
     if (image == NULL) {
-        printf("ERRO: Nao foi possivel carregar o smiley_face!\n");
+        printf("ERRO: Nao foi possivel carregar o sprites.png\n");
         return -1; // Encerra o programa de forma segura
     }
+    if (mapa == NULL) {
+        printf("ERRO: Nao foi possivel carregar o chão.png\n");
+        return -1; // Encerra o programa de forma segura
+    }
+    
+    
 
     al_register_all_event_source(queue, timer, disp);
 
@@ -72,8 +81,7 @@ int main (void){
         if(evento_primario.type == ALLEGRO_EVENT_TIMER && al_is_event_queue_empty(queue)) {
             criar_mapa(&i_mapa,&i_mapa_anterior, array_map, parede, mapa, chao);
            
-            printar_tela(&tecla, &p, &t, &si, image, array_map); //um misto de funções que fica atualizando a tela a cada tick
-        
+            printar_tela(&tecla, &p, &si, image, array_map); //um misto de funções que fica atualizando a tela a cada tick
         }
        
     }
