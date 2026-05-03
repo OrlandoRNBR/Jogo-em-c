@@ -6,6 +6,8 @@
 #include <allegro5/allegro_ttf.h>
 #include <stdbool.h>
 
+typedef const char* string;
+
 typedef struct masps{ //define algumas variaveis de criação de mapa
     int eixox;
     int eixoy;

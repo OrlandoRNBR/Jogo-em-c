@@ -30,6 +30,7 @@ typedef struct teclas{ //struct que armazena se as teclas estão sendo precionad
     bool t2;
     bool t3;
     bool t0;
+    bool r;
 }teclas;
 
 bool colisao(int x, int y, int array_map[32][32], int tamanho); //define a colisão do jogo

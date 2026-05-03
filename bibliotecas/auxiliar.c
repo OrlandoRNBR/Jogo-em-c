@@ -2,6 +2,7 @@
 #include "player.h"
 
 
+
 void printar_chao(ALLEGRO_BITMAP* mapa,map chao){ //cada função dessa compoem um pedaço do chão do jogo
     al_draw_bitmap_region(mapa, 0, 0, chao.largura, chao.altura, chao.eixox, chao.eixoy, 0);
     al_draw_bitmap_region(mapa, 0, 0, chao.largura, chao.altura, chao.eixox+256, chao.eixoy, 0);
@@ -16,7 +17,7 @@ void printar_chao(ALLEGRO_BITMAP* mapa,map chao){ //cada função dessa compoem 
 void criar_mapa(int* i_mapa,int* i_mapa_anterior, int array_map[32][32],ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP* mapa, map chao){
     /*cria um vetor de string com os endereços dos mapas*/
     if(*i_mapa_anterior != *i_mapa){
-            const char* nomes[] = {
+            string nomes[] = {
             "maps/mapa_default.txt",
             "maps/mapa1.txt",
             "maps/mapa2.txt",

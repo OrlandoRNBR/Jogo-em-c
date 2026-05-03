@@ -17,10 +17,11 @@ int main (void){
     tela t = {512, 512};
     int si = 0;
     /*teclas nessa ordem w, d,s,a,1,2,3,0.*/
-    teclas tecla = {false, false, false, false, false, false, false, false};
+    teclas tecla = {false, false, false, false, false, false, false, false, false};
     int array_map[32][32];
     int i_mapa = 0;
     int i_mapa_anterior = -1;
+    int skin = 0;
 
     /*Carregamento dos ponteros allegro*/
     //cria a janela do jogo no padrão largura x altura 
@@ -35,7 +36,10 @@ int main (void){
 
     
     /*carregamento dos sprites do jogo*/
-    ALLEGRO_BITMAP*         image = al_load_bitmap("sprites/sprites.png");
+    ALLEGRO_BITMAP*         skin_set[2];
+    skin_set [0]= al_load_bitmap("sprites/ash.png");
+    skin_set [1]= al_load_bitmap("sprites/luiza.png");
+    ALLEGRO_BITMAP*         image = al_load_bitmap("sprites/ash.png");
     ALLEGRO_BITMAP*         mapa = al_load_bitmap("sprites/chão.png");
     ALLEGRO_BITMAP*         parede[10]; 
     parede [0] = al_load_bitmap("sprites/void.png");
@@ -63,15 +67,19 @@ int main (void){
     ALLEGRO_EVENT evento_primario; // armazena os eventos do jogo
     al_start_timer(timer); //inicia o rologio 
 
-    while(1){ 
+    while(1){
         al_wait_for_event(queue, &evento_primario); //pausa o loping até algun evento aocntecer
-        
+
      // verifica se p evento que acabou de acontecer foi fechar a janela
         if(evento_primario.type == ALLEGRO_EVENT_DISPLAY_CLOSE || evento_primario.keyboard.keycode == ALLEGRO_KEY_ESCAPE) break;
 
         /*recebe as teclas usadas no jogo e declara como true ou false*/
         receber_teclas(&evento_primario, &ultima_tecla_precionada, &tecla, &i_mapa ); 
-        
+           
+                if(evento_primario.keyboard.keycode == ALLEGRO_KEY_C) skin++;
+                if(skin > 1) skin = 0;
+   
+            ALLEGRO_BITMAP*         image = skin_set[skin];
         if(evento_primario.type == ALLEGRO_EVENT_TIMER && al_is_event_queue_empty(queue)) {
             criar_mapa(&i_mapa,&i_mapa_anterior, array_map, parede, mapa, chao);
            
