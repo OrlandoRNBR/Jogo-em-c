@@ -8,7 +8,7 @@
 
 
 bool colisao(int x, int y ,int array_map[32][32], int tamanho ){
-    
+    /*cria a colisão do jogo verificando todas as direções do personagem*/
     int margem_cima = 8;
     int margem_baixo = 4;
     
@@ -68,7 +68,7 @@ void receber_teclas (ALLEGRO_EVENT *evento_primario, int *ultima_tecla_precionad
       }
     }
 
-    if(tecla->t1){
+    if(tecla->t1){ //define o valor de i mapa para saebr qual usar
             *i_mapa = 1;
         }else if(tecla->t2){
             *i_mapa = 2;
@@ -80,7 +80,7 @@ void receber_teclas (ALLEGRO_EVENT *evento_primario, int *ultima_tecla_precionad
 }
 
     void processar_teclas(teclas *tecla, player* p, int array_map[32][32]){
-    
+    /*processa as teclas e define o movimento, tambem aplica a colisão*/
     int novo_x = p->eixox;
     int novo_y = p->eixoy;
 
