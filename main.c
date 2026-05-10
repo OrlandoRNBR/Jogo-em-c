@@ -22,6 +22,7 @@ int main (void){
     int i_mapa = 0;
     int i_mapa_anterior = -1;
     int skin = 0;
+    bool playing = false;
 
     /*Carregamento dos ponteros allegro*/
     //cria a janela do jogo no padrão largura x altura 
@@ -41,6 +42,7 @@ int main (void){
     skin_set [1]= al_load_bitmap("sprites/luiza.png");
     ALLEGRO_BITMAP*         image = al_load_bitmap("sprites/ash.png");
     ALLEGRO_BITMAP*         mapa = al_load_bitmap("sprites/chão.png");
+    ALLEGRO_BITMAP*         ui = al_load_bitmap("sprites/ui.png");
     ALLEGRO_BITMAP*         parede[10]; 
     parede [0] = al_load_bitmap("sprites/void.png");
     parede [1] = al_load_bitmap("sprites/parede1.png");
@@ -73,6 +75,12 @@ int main (void){
      // verifica se p evento que acabou de acontecer foi fechar a janela
         if(evento_primario.type == ALLEGRO_EVENT_DISPLAY_CLOSE || evento_primario.keyboard.keycode == ALLEGRO_KEY_ESCAPE) break;
 
+        if(evento_primario.type == ALLEGRO_EVENT_KEY_DOWN){
+            if(evento_primario.keyboard.keycode == ALLEGRO_KEY_P) playing = true;
+            if(evento_primario.keyboard.keycode == ALLEGRO_KEY_M) playing = false; 
+        }
+
+        if(playing){
         /*recebe as teclas usadas no jogo e declara como true ou false*/
         receber_teclas(&evento_primario, &ultima_tecla_precionada, &tecla, &i_mapa ); 
            
@@ -85,8 +93,11 @@ int main (void){
            
             printar_tela(&tecla, &p, &si, image, array_map); //um misto de funções que fica atualizando a tela a cada tick
         }
-       
+        }else{
+            al_draw_bitmap(ui, 0, 0, 0);
+            al_flip_display();
+        }
     }
-    al_destroy_all(disp, timer, queue, font, image, mapa, parede); //roda todas as finções de liberação da memoria!
+    al_destroy_all(disp, timer, queue, font, image, mapa, parede, ui); //roda todas as finções de liberação da memoria!
     
 }
