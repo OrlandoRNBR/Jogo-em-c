@@ -23,6 +23,7 @@ int main (void){
     int i_mapa_anterior = -1;
     int skin = 0;
     bool playing = false;
+    bool Play_detect = false, config_detect = false, char_detect = false, exti_detect = false;
 
     /*Carregamento dos ponteros allegro*/
     //cria a janela do jogo no padrão largura x altura 
@@ -66,7 +67,7 @@ int main (void){
     }
 
     al_register_all_event_source(queue, timer, disp);
-    ALLEGRO_EVENT evento_primario; // armazena os eventos do jogo
+    ALLEGRO_EVENT evento_primario, evento_secundario; // armazena os eventos do jogo
     al_start_timer(timer); //inicia o rologio 
 
     while(1){
@@ -80,10 +81,42 @@ int main (void){
             if(evento_primario.keyboard.keycode == ALLEGRO_KEY_M) playing = false; 
         }
 
+        if(!playing){
+            if(evento_primario.type == ALLEGRO_EVENT_MOUSE_AXES || evento_primario.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
+
+            if(evento_primario.mouse.x > 152 && evento_primario.mouse.y > 187 && evento_primario.mouse.x < 364 && evento_primario.mouse.y < 222 ){
+                if(evento_primario.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
+                if(evento_primario.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT) playing = true;
+
+                Play_detect = true;
+            }else if(evento_primario.mouse.x > 152 && evento_primario.mouse.y > 224 && evento_primario.mouse.x < 364 && evento_primario.mouse.y < 259){
+                if(evento_primario.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
+                if(evento_primario.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT) skin++;
+                if(skin > 1) skin = 0;
+                char_detect = true;
+            }else if(evento_primario.mouse.x > 152 && evento_primario.mouse.y > 262 && evento_primario.mouse.x < 364 && evento_primario.mouse.y < 297){
+                if(evento_primario.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
+                printf("Função não emplementada!\n");
+
+                config_detect = false;
+            }else if(evento_primario.mouse.x > 152 && evento_primario.mouse.y > 298 && evento_primario.mouse.x < 364 && evento_primario.mouse.y < 333){
+                if(evento_primario.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) 
+                if(evento_primario.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT) break;
+
+                exti_detect = true;
+            }else{ 
+                Play_detect = false;
+                config_detect = false;
+                char_detect = false;
+                exti_detect = false;
+            }
+            }
+        }
+
         if(playing){
         /*recebe as teclas usadas no jogo e declara como true ou false*/
         receber_teclas(&evento_primario, &ultima_tecla_precionada, &tecla, &i_mapa ); 
-           
+
                 if(evento_primario.keyboard.keycode == ALLEGRO_KEY_C) skin++;
                 if(skin > 1) skin = 0;
    
@@ -94,12 +127,20 @@ int main (void){
             printar_tela(&tecla, &p, &si, image, array_map); //um misto de funções que fica atualizando a tela a cada tick
         }
         }else{
+        
             al_draw_bitmap(ui, 0, 0, 0);
             al_draw_text(font, al_map_rgb(255, 255, 255), 100, 0, ALLEGRO_ALIGN_CENTRE, "Nome");
             al_draw_text(font, al_map_rgb(138, 0, 0), 262, 188, ALLEGRO_ALIGN_CENTRE, "Play");
+            al_draw_rectangle(152, 187, 364, 222,  al_map_rgb(138, 0, 255),5);
+            if(Play_detect){
+                al_draw_rectangle(152, 187, 364, 222,  al_map_rgb(138, 0, 0), 5);
+            }
+
+
             al_draw_text(font, al_map_rgb(138, 0, 0), 262, 260, ALLEGRO_ALIGN_CENTRE, "characters");
             al_draw_text(font, al_map_rgb(138, 0, 0), 262, 332, ALLEGRO_ALIGN_CENTRE, "Config");
             al_draw_text(font, al_map_rgb(138, 0, 0), 262, 404, ALLEGRO_ALIGN_CENTRE, "exit");
+            al_draw_bitmap_region(image,p.tamanho * si,p.tamanho * 0, p.tamanho, p.tamanho, 60, 262, 0);
             al_flip_display();
         }
     }
