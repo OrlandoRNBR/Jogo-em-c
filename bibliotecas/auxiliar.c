@@ -57,6 +57,8 @@ void al_init_all(){
     al_init_ttf_addon();// permite o alegro renderizar fontes de arquivos ttf
     al_init_image_addon(); //permite a biblioteca alegro renderizar bitmaps
     al_install_keyboard(); //informa o sistema operacional que o programa vai capiturar teclas
+    al_install_mouse(); //informa o codigo que ele precisa olhar as informações do mouse
+    al_init_primitives_addon();
 }
 
 void al_destroy_all(ALLEGRO_DISPLAY* disp, ALLEGRO_TIMER* timer, ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT* font, ALLEGRO_BITMAP* image, ALLEGRO_BITMAP* mapa, ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP* ui){
@@ -80,4 +82,6 @@ void al_register_all_event_source(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_TIMER* tim
     al_register_event_source(queue, al_get_display_event_source(disp));
     //diz para a fila prestar atenção nos ticks
     al_register_event_source(queue, al_get_timer_event_source(timer));
+    
+    al_register_event_source(queue, al_get_mouse_event_source());
 }

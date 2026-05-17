@@ -73,6 +73,7 @@ int main (void){
     while(1){
         al_wait_for_event(queue, &evento_primario); //pausa o loping até algun evento aocntecer
 
+        if(skin > 1) skin = 0;
      // verifica se p evento que acabou de acontecer foi fechar a janela
         if(evento_primario.type == ALLEGRO_EVENT_DISPLAY_CLOSE || evento_primario.keyboard.keycode == ALLEGRO_KEY_ESCAPE) break;
 
@@ -82,35 +83,29 @@ int main (void){
         }
 
         if(!playing){
-            if(evento_primario.type == ALLEGRO_EVENT_MOUSE_AXES || evento_primario.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
-
+           
             if(evento_primario.mouse.x > 152 && evento_primario.mouse.y > 187 && evento_primario.mouse.x < 364 && evento_primario.mouse.y < 222 ){
                 if(evento_primario.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
-                if(evento_primario.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT) playing = true;
-
-                Play_detect = true;
-            }else if(evento_primario.mouse.x > 152 && evento_primario.mouse.y > 224 && evento_primario.mouse.x < 364 && evento_primario.mouse.y < 259){
-                if(evento_primario.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
-                if(evento_primario.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT) skin++;
-                if(skin > 1) skin = 0;
-                char_detect = true;
-            }else if(evento_primario.mouse.x > 152 && evento_primario.mouse.y > 262 && evento_primario.mouse.x < 364 && evento_primario.mouse.y < 297){
-                if(evento_primario.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
-                printf("Função não emplementada!\n");
-
-                config_detect = false;
-            }else if(evento_primario.mouse.x > 152 && evento_primario.mouse.y > 298 && evento_primario.mouse.x < 364 && evento_primario.mouse.y < 333){
-                if(evento_primario.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) 
-                if(evento_primario.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT) break;
-
-                exti_detect = true;
-            }else{ 
-                Play_detect = false;
-                config_detect = false;
-                char_detect = false;
-                exti_detect = false;
+                    if(evento_primario.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT) playing = true;
+                
+                Play_detect = true;  
             }
+            if(evento_primario.mouse.x > 152 && evento_primario.mouse.y > 224 && evento_primario.mouse.x < 364 && evento_primario.mouse.y < 286 ){
+                if(evento_primario.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
+                    if(evento_primario.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT) skin++;
+
             }
+            if(evento_primario.mouse.x > 152 && evento_primario.mouse.y > 262 && evento_primario.mouse.x < 364 && evento_primario.mouse.y < 359){
+                if(evento_primario.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
+                    if(evento_primario.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT) printf("Função em desenvolvimento!\nMenu de configurações não implementado!\n");
+            
+            }
+            if(evento_primario.mouse.x > 152 && evento_primario.mouse.y > 298 && evento_primario.mouse.x < 364 && evento_primario.mouse.y < 430){
+                if(evento_primario.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
+                    if(evento_primario.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT) break;
+
+            }
+            
         }
 
         if(playing){
@@ -118,7 +113,6 @@ int main (void){
         receber_teclas(&evento_primario, &ultima_tecla_precionada, &tecla, &i_mapa ); 
 
                 if(evento_primario.keyboard.keycode == ALLEGRO_KEY_C) skin++;
-                if(skin > 1) skin = 0;
    
             ALLEGRO_BITMAP*         image = skin_set[skin];
         if(evento_primario.type == ALLEGRO_EVENT_TIMER && al_is_event_queue_empty(queue)) {
@@ -131,10 +125,11 @@ int main (void){
             al_draw_bitmap(ui, 0, 0, 0);
             al_draw_text(font, al_map_rgb(255, 255, 255), 100, 0, ALLEGRO_ALIGN_CENTRE, "Nome");
             al_draw_text(font, al_map_rgb(138, 0, 0), 262, 188, ALLEGRO_ALIGN_CENTRE, "Play");
-            al_draw_rectangle(152, 187, 364, 222,  al_map_rgb(138, 0, 255),5);
-            if(Play_detect){
-                al_draw_rectangle(152, 187, 364, 222,  al_map_rgb(138, 0, 0), 5);
-            }
+            
+                al_draw_rectangle(152, 187, 364, 222,  al_map_rgb(138, 0, 0), 3);
+                al_draw_rectangle(152, 224, 364, 286,  al_map_rgb(138, 155, 0), 3);
+                al_draw_rectangle(152, 262, 364, 359,  al_map_rgb(138, 0, 255), 3);
+                al_draw_rectangle(152, 298, 364, 430,  al_map_rgb(138, 255, 0), 3);
 
 
             al_draw_text(font, al_map_rgb(138, 0, 0), 262, 260, ALLEGRO_ALIGN_CENTRE, "characters");
