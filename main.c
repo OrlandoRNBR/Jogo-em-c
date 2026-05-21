@@ -8,6 +8,7 @@
 #include "bibliotecas/auxiliar.h"
 
 
+
 int main (void){
     al_init_all(); //todos os inits em uma unica função!
 
@@ -23,7 +24,6 @@ int main (void){
     int i_mapa_anterior = -1;
     int skin = 0;
     bool playing = false;
-    bool Play_detect = false, config_detect = false, char_detect = false, exti_detect = false;
 
     /*Carregamento dos ponteros allegro*/
     //cria a janela do jogo no padrão largura x altura 
@@ -41,6 +41,7 @@ int main (void){
     ALLEGRO_BITMAP*         skin_set[2];
     skin_set [0]= al_load_bitmap("sprites/ash.png");
     skin_set [1]= al_load_bitmap("sprites/luiza.png");
+    skin_set [2]= al_load_bitmap("sprites/kayky.png");
     ALLEGRO_BITMAP*         image = al_load_bitmap("sprites/ash.png");
     ALLEGRO_BITMAP*         mapa = al_load_bitmap("sprites/chão.png");
     ALLEGRO_BITMAP*         ui = al_load_bitmap("sprites/ui.png");
@@ -67,13 +68,16 @@ int main (void){
     }
 
     al_register_all_event_source(queue, timer, disp);
-    ALLEGRO_EVENT evento_primario, evento_secundario; // armazena os eventos do jogo
+    ALLEGRO_EVENT evento_primario; // armazena os eventos do jogo
     al_start_timer(timer); //inicia o rologio 
 
     while(1){
         al_wait_for_event(queue, &evento_primario); //pausa o loping até algun evento aocntecer
 
-        if(skin > 1) skin = 0;
+        if(skin > 2) skin = 0;
+
+        ALLEGRO_BITMAP*         image = skin_set[skin];
+
      // verifica se p evento que acabou de acontecer foi fechar a janela
         if(evento_primario.type == ALLEGRO_EVENT_DISPLAY_CLOSE || evento_primario.keyboard.keycode == ALLEGRO_KEY_ESCAPE) break;
 
@@ -87,20 +91,18 @@ int main (void){
             if(evento_primario.mouse.x > 152 && evento_primario.mouse.y > 187 && evento_primario.mouse.x < 364 && evento_primario.mouse.y < 222 ){
                 if(evento_primario.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
                     if(evento_primario.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT) playing = true;
-                
-                Play_detect = true;  
             }
-            if(evento_primario.mouse.x > 152 && evento_primario.mouse.y > 224 && evento_primario.mouse.x < 364 && evento_primario.mouse.y < 286 ){
+            if(evento_primario.mouse.x > 152 && evento_primario.mouse.y > 259 && evento_primario.mouse.x < 364 && evento_primario.mouse.y < 294){
                 if(evento_primario.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
                     if(evento_primario.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT) skin++;
 
             }
-            if(evento_primario.mouse.x > 152 && evento_primario.mouse.y > 262 && evento_primario.mouse.x < 364 && evento_primario.mouse.y < 359){
+            if(evento_primario.mouse.x > 152 && evento_primario.mouse.y > 331 && evento_primario.mouse.x < 364 && evento_primario.mouse.y < 366){
                 if(evento_primario.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
                     if(evento_primario.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT) printf("Função em desenvolvimento!\nMenu de configurações não implementado!\n");
             
             }
-            if(evento_primario.mouse.x > 152 && evento_primario.mouse.y > 298 && evento_primario.mouse.x < 364 && evento_primario.mouse.y < 430){
+            if(evento_primario.mouse.x > 152 && evento_primario.mouse.y > 403 && evento_primario.mouse.x < 364 && evento_primario.mouse.y < 438){
                 if(evento_primario.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
                     if(evento_primario.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT) break;
 
@@ -112,9 +114,14 @@ int main (void){
         /*recebe as teclas usadas no jogo e declara como true ou false*/
         receber_teclas(&evento_primario, &ultima_tecla_precionada, &tecla, &i_mapa ); 
 
-                if(evento_primario.keyboard.keycode == ALLEGRO_KEY_C) skin++;
-   
-            ALLEGRO_BITMAP*         image = skin_set[skin];
+        if(evento_primario.keyboard.keycode == ALLEGRO_KEY_C) skin++;
+        
+        //if(evento_primario.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT)
+            /*se tem tiro na tela tiro++ if tiro some (batendo na parede ou no inimigo) tiro é um projetil que se desloca
+            pelo mapa na doreção que o cursor ta*/
+              
+        
+
         if(evento_primario.type == ALLEGRO_EVENT_TIMER && al_is_event_queue_empty(queue)) {
             criar_mapa(&i_mapa,&i_mapa_anterior, array_map, parede, mapa, chao);
            
@@ -122,21 +129,7 @@ int main (void){
         }
         }else{
         
-            al_draw_bitmap(ui, 0, 0, 0);
-            al_draw_text(font, al_map_rgb(255, 255, 255), 100, 0, ALLEGRO_ALIGN_CENTRE, "Nome");
-            al_draw_text(font, al_map_rgb(138, 0, 0), 262, 188, ALLEGRO_ALIGN_CENTRE, "Play");
-            
-                al_draw_rectangle(152, 187, 364, 222,  al_map_rgb(138, 0, 0), 3);
-                al_draw_rectangle(152, 224, 364, 286,  al_map_rgb(138, 155, 0), 3);
-                al_draw_rectangle(152, 262, 364, 359,  al_map_rgb(138, 0, 255), 3);
-                al_draw_rectangle(152, 298, 364, 430,  al_map_rgb(138, 255, 0), 3);
-
-
-            al_draw_text(font, al_map_rgb(138, 0, 0), 262, 260, ALLEGRO_ALIGN_CENTRE, "characters");
-            al_draw_text(font, al_map_rgb(138, 0, 0), 262, 332, ALLEGRO_ALIGN_CENTRE, "Config");
-            al_draw_text(font, al_map_rgb(138, 0, 0), 262, 404, ALLEGRO_ALIGN_CENTRE, "exit");
-            al_draw_bitmap_region(image,p.tamanho * si,p.tamanho * 0, p.tamanho, p.tamanho, 60, 262, 0);
-            al_flip_display();
+            printar_menu(ui, font, image, p);
         }
     }
     al_destroy_all(disp, timer, queue, font, image, mapa, parede, ui); //roda todas as finções de liberação da memoria!

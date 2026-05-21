@@ -1,0 +1,13 @@
+# Compilados (Arquivos executáveis e objetos)
+*.exe
+*.out
+*.o
+*.obj
+
+# Pastas de Build (se você usar CMake ou VS Code Run)
+build/
+.vscode/
+
+# Arquivos de sistema e lixo
+.DS_Store
+Thumbs.db

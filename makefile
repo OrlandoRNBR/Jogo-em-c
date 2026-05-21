@@ -8,7 +8,7 @@ SRCS = main.c bibliotecas/player.c bibliotecas/auxiliar.c
 OBJS = $(SRCS:.c=.o)
 
 all: $(OBJS)
-	$(CC) -o main.exe $(OBJS) $(LDLIBS)
+	$(CC) -o main.out $(OBJS) $(LDLIBS)
 
 clean:
-	rm -f $(OBJS) main.exe
+	rm -f $(OBJS) main.out

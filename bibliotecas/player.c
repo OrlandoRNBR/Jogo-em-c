@@ -7,6 +7,17 @@
 #include "auxiliar.h"
 
 
+void printar_menu(ALLEGRO_BITMAP* ui, ALLEGRO_FONT* font, ALLEGRO_BITMAP* image, player p){
+    al_draw_bitmap(ui, 0, 0, 0);
+    al_draw_text(font, al_map_rgb(255, 255, 255), 100, 0, ALLEGRO_ALIGN_CENTRE, "Nome");
+    al_draw_text(font, al_map_rgb(138, 0, 0), 262, 188, ALLEGRO_ALIGN_CENTRE, "Play");
+    al_draw_text(font, al_map_rgb(138, 0, 0), 262, 260, ALLEGRO_ALIGN_CENTRE, "characters");
+    al_draw_text(font, al_map_rgb(138, 0, 0), 262, 332, ALLEGRO_ALIGN_CENTRE, "Config");
+    al_draw_text(font, al_map_rgb(138, 0, 0), 262, 404, ALLEGRO_ALIGN_CENTRE, "exit");
+    al_draw_bitmap_region(image,p.tamanho * 0,p.tamanho * 0, p.tamanho, p.tamanho, 60, 262, 0);
+    al_flip_display();
+}
+
 bool colisao(int x, int y ,int array_map[32][32], int tamanho ){
     /*cria a colisão do jogo verificando todas as direções do personagem*/
     int margem_cima = 8;

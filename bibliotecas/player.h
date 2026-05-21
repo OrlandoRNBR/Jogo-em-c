@@ -34,6 +34,8 @@ typedef struct teclas{ //struct que armazena se as teclas estão sendo precionad
     bool r;
 }teclas;
 
+void printar_menu(ALLEGRO_BITMAP* ui, ALLEGRO_FONT* font, ALLEGRO_BITMAP* image, player p);
+
 bool colisao(int x, int y, int array_map[32][32], int tamanho); //define a colisão do jogo
 
 void printar_player(ALLEGRO_BITMAP* image, teclas* tecla, player p, int si); //mostra o player na tela
