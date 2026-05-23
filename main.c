@@ -38,10 +38,11 @@ int main (void){
 
     
     /*carregamento dos sprites do jogo*/
-    ALLEGRO_BITMAP*         skin_set[2];
+    ALLEGRO_BITMAP*         skin_set[4];
     skin_set [0]= al_load_bitmap("sprites/ash.png");
     skin_set [1]= al_load_bitmap("sprites/luiza.png");
     skin_set [2]= al_load_bitmap("sprites/kayky.png");
+    skin_set [3]= al_load_bitmap("sprites/david.png");
     ALLEGRO_BITMAP*         image = al_load_bitmap("sprites/ash.png");
     ALLEGRO_BITMAP*         mapa = al_load_bitmap("sprites/chão.png");
     ALLEGRO_BITMAP*         ui = al_load_bitmap("sprites/ui.png");
@@ -74,7 +75,7 @@ int main (void){
     while(1){
         al_wait_for_event(queue, &evento_primario); //pausa o loping até algun evento aocntecer
 
-        if(skin > 2) skin = 0;
+        if(skin > 3) skin = 0;
 
         ALLEGRO_BITMAP*         image = skin_set[skin];
 
