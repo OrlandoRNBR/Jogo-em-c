@@ -1,6 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+    
 
 #include <stdio.h>
 #include <allegro5/allegro5.h> 
@@ -34,6 +35,13 @@ typedef struct teclas{ //struct que armazena se as teclas estão sendo precionad
     bool r;
 }teclas;
 
+
+typedef struct{
+    float x, y;
+    float velx, vely;
+    bool ativo;
+} tiro;
+
 void printar_menu(ALLEGRO_BITMAP* ui, ALLEGRO_FONT* font, ALLEGRO_BITMAP* image, player p);
 
 bool colisao(int x, int y, int array_map[32][32], int tamanho); //define a colisão do jogo
@@ -46,6 +54,6 @@ void processar_teclas (teclas *tecla, player* p, int array_map[32][32]); //proce
 
 void animacao_player(int * si, teclas* tecla); //faz a navegação pelo spritesheet do player
 
-void printar_tela(teclas* tecla, player* p, int* si,ALLEGRO_BITMAP* image, int array_map[32][32]); //usa as fubções a cima para compor a tela do jogo
+void printar_tela(teclas* tecla, player* p, int* si,ALLEGRO_BITMAP* image, int array_map[32][32], tiro tiro, ALLEGRO_BITMAP* image_tiro); //usa as fubções a cima para compor a tela do jogo
 
 #endif

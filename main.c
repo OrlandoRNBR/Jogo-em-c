@@ -1,21 +1,22 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <allegro5/allegro5.h> 
-#include <allegro5/allegro_image.h>
-#include <allegro5/allegro_ttf.h>
-#include <stdbool.h>
 #include "bibliotecas/player.h"
 #include "bibliotecas/auxiliar.h"
+#include <math.h>
+
+#define largura 512
+#define altura 512
+//teste do tiro do personagem pegar imagem de tiro
+#define VELOCIDADE_TIRO 8.0
 
 
+   
 
 int main (void){
     al_init_all(); //todos os inits em uma unica função!
 
     player p = {16, 16, 5, 3, 32}; //declaração do player posição eixo x, posição eixo y, vidas
+    tiro tiro = {0, 0, 0, 0, false};
     map chao = {0,0,256, 128};//informações do fundo do mapa
     int ultima_tecla_precionada = 0;
-    tela t = {512, 512};
     int si = 0;
     /*teclas nessa ordem w, d,s,a,1,2,3,0.*/
     teclas tecla = {false, false, false, false, false, false, false, false, false};
@@ -24,29 +25,39 @@ int main (void){
     int i_mapa_anterior = -1;
     int skin = 0;
     bool playing = false;
+    int x_mouse, y_mouse, x_tiro, y_tiro;
 
     /*Carregamento dos ponteros allegro*/
     //cria a janela do jogo no padrão largura x altura 
-    ALLEGRO_DISPLAY*        disp = al_create_display(t.largura, t.altura);
+    ALLEGRO_DISPLAY*        disp = al_create_display(largura, altura);
     ALLEGRO_TIMER*          timer = al_create_timer(1.0/30.0);
     ALLEGRO_EVENT_QUEUE*    queue = al_create_event_queue();
     ALLEGRO_FONT*           font = al_load_font("Fonts/GODOFWAR.TTF", 30, 0);
     if (font == NULL) {
         printf("ERRO: Nao foi possivel carregar a fonte GODOFWAR!\n");
         return -1; // Encerra o programa de forma segura
-    }
+    }   
 
-    
     /*carregamento dos sprites do jogo*/
-    ALLEGRO_BITMAP*         skin_set[4];
-    skin_set [0]= al_load_bitmap("sprites/ash.png");
-    skin_set [1]= al_load_bitmap("sprites/luiza.png");
-    skin_set [2]= al_load_bitmap("sprites/kayky.png");
-    skin_set [3]= al_load_bitmap("sprites/david.png");
-    ALLEGRO_BITMAP*         image = al_load_bitmap("sprites/ash.png");
-    ALLEGRO_BITMAP*         mapa = al_load_bitmap("sprites/chão.png");
-    ALLEGRO_BITMAP*         ui = al_load_bitmap("sprites/ui.png");
-    ALLEGRO_BITMAP*         parede[10]; 
+    int skin_tamanho = 5;
+    ALLEGRO_BITMAP* skin_set[5];
+    skin_set [0] = al_load_bitmap("sprites/ash.png");
+    skin_set [1] = al_load_bitmap("sprites/luiza.png");
+    skin_set [2] = al_load_bitmap("sprites/kayky.png");
+    skin_set [3] = al_load_bitmap("sprites/david.png");
+    skin_set [4] = al_load_bitmap("sprites/rayssa.png");
+
+    ALLEGRO_BITMAP* skin_tiro[5];
+    skin_tiro [0] = al_load_bitmap("sprites/bulet_ahs.png");
+    skin_tiro [1] = al_load_bitmap("sprites/bulet_luiza.png");
+    skin_tiro [2] = al_load_bitmap("sprites/bulet.png");
+    skin_tiro [3] = al_load_bitmap("sprites/bulet_david.png");
+    skin_tiro [4] = al_load_bitmap("sprites/bulet.png");
+
+    ALLEGRO_BITMAP* image = al_load_bitmap("sprites/ash.png");
+    ALLEGRO_BITMAP* mapa = al_load_bitmap("sprites/chão.png");
+    ALLEGRO_BITMAP* ui = al_load_bitmap("sprites/ui.png");
+    ALLEGRO_BITMAP* parede[10]; 
     parede [0] = al_load_bitmap("sprites/void.png");
     parede [1] = al_load_bitmap("sprites/parede1.png");
     parede [2] = al_load_bitmap("sprites/parede2.png");
@@ -75,9 +86,10 @@ int main (void){
     while(1){
         al_wait_for_event(queue, &evento_primario); //pausa o loping até algun evento aocntecer
 
-        if(skin > 3) skin = 0;
-
-        ALLEGRO_BITMAP*         image = skin_set[skin];
+        if(skin >= skin_tamanho) skin = 0;
+        
+        ALLEGRO_BITMAP* image = skin_set[skin];
+        ALLEGRO_BITMAP* image_tiro = skin_tiro[skin];
 
      // verifica se p evento que acabou de acontecer foi fechar a janela
         if(evento_primario.type == ALLEGRO_EVENT_DISPLAY_CLOSE || evento_primario.keyboard.keycode == ALLEGRO_KEY_ESCAPE) break;
@@ -86,6 +98,7 @@ int main (void){
             if(evento_primario.keyboard.keycode == ALLEGRO_KEY_P) playing = true;
             if(evento_primario.keyboard.keycode == ALLEGRO_KEY_M) playing = false; 
         }
+
 
         if(!playing){
            
@@ -115,24 +128,51 @@ int main (void){
         /*recebe as teclas usadas no jogo e declara como true ou false*/
         receber_teclas(&evento_primario, &ultima_tecla_precionada, &tecla, &i_mapa ); 
 
-        if(evento_primario.keyboard.keycode == ALLEGRO_KEY_C) skin++;
-        
-        //if(evento_primario.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT)
-            /*se tem tiro na tela tiro++ if tiro some (batendo na parede ou no inimigo) tiro é um projetil que se desloca
-            pelo mapa na doreção que o cursor ta*/
-              
-        
+        if(evento_primario.type == ALLEGRO_EVENT_MOUSE_AXES){
+            x_mouse = evento_primario.mouse.x;
+            y_mouse = evento_primario.mouse.y;
+        }
+       
+        if(evento_primario.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
+            if(evento_primario.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT){
+                x_tiro = evento_primario.mouse.x;
+                y_tiro = evento_primario.mouse.y;
+
+                if(!tiro.ativo){
+                    float dx = x_tiro - p.eixox;
+                    float dy = y_tiro - p.eixoy;
+                    float distancia = hypot(dx, dy);
+                    if(distancia != 0){
+                        tiro.x = p.eixox;
+                        tiro.y = p.eixoy;
+                        tiro.velx = (dx/distancia)*VELOCIDADE_TIRO;
+                        tiro.vely = (dy/distancia)*VELOCIDADE_TIRO;
+                        tiro.ativo = true;
+                    }
+                }
+            }
+        }
+
+        if(tiro.ativo){
+            tiro.x += tiro.velx;
+            tiro.y += tiro.vely;
+
+            if(tiro.x < 0 || tiro.x > largura || tiro.y < 0 || tiro.y > altura){
+                tiro.ativo = false;
+                printf("Tiro sumiu na borada da tela\n");
+            }
+        }
 
         if(evento_primario.type == ALLEGRO_EVENT_TIMER && al_is_event_queue_empty(queue)) {
             criar_mapa(&i_mapa,&i_mapa_anterior, array_map, parede, mapa, chao);
            
-            printar_tela(&tecla, &p, &si, image, array_map); //um misto de funções que fica atualizando a tela a cada tick
+            printar_tela(&tecla, &p, &si, image, array_map, tiro, image_tiro); //um misto de funções que fica atualizando a tela a cada tick
         }
         }else{
         
             printar_menu(ui, font, image, p);
         }
     }
-    al_destroy_all(disp, timer, queue, font, image, mapa, parede, ui); //roda todas as finções de liberação da memoria!
+    al_destroy_all(disp, timer, queue, font, image, mapa, parede, ui, skin_set, skin_tamanho, skin_tiro); //roda todas as finções de liberação da memoria!
     
 }

@@ -61,7 +61,7 @@ void al_init_all(){
     al_init_primitives_addon();
 }
 
-void al_destroy_all(ALLEGRO_DISPLAY* disp, ALLEGRO_TIMER* timer, ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT* font, ALLEGRO_BITMAP* image, ALLEGRO_BITMAP* mapa, ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP* ui){
+void al_destroy_all(ALLEGRO_DISPLAY* disp, ALLEGRO_TIMER* timer, ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT* font, ALLEGRO_BITMAP* image, ALLEGRO_BITMAP* mapa, ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP* ui, ALLEGRO_BITMAP* skin[], int skin_tamanho, ALLEGRO_BITMAP* skin_tiro[]){
     al_destroy_display(disp); //destroi a janela e libera a memoria
     al_destroy_timer(timer);// destroi o relogio e libera a memoria
     al_destroy_event_queue(queue);//destroi a fila de eventos e libera da memoria
@@ -71,6 +71,12 @@ void al_destroy_all(ALLEGRO_DISPLAY* disp, ALLEGRO_TIMER* timer, ALLEGRO_EVENT_Q
     al_destroy_bitmap(ui);
     for(int i = 0; i < 10; i++){ //limpa todos os indices de parede
         al_destroy_bitmap(parede[i]);
+    }
+    for(int i = 0; i < skin_tamanho; i++){ //limpa todos os indices de parede
+        al_destroy_bitmap(skin[i]);
+    }
+    for(int i = 0; i < skin_tamanho; i++){ //limpa todos os indices de parede
+        al_destroy_bitmap(skin_tiro[i]);
     }
     
 }
