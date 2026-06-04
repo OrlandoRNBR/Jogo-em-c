@@ -1,6 +1,7 @@
 #include "bibliotecas/player.h"
 #include "bibliotecas/auxiliar.h"
-#include <math.h>
+#include "bibliotecas/maps.h"
+
 
 #define largura 512
 #define altura 512
@@ -8,7 +9,27 @@
 #define VELOCIDADE_TIRO 8.0
 
 
-   
+bool colisao_tiro(int x, int y ,int array_map[32][32]){
+    /*cria a colisão do jogo verificando todas as direções do personagem*/
+    int tamanho = 0; 
+    int margem_cima = 2;
+    int margem_baixo = 1;
+    
+    int esquerda = (x + margem_cima) / 16;
+    int direita  = (x + tamanho - margem_baixo - 1) / 16;
+    int topo     = (y + margem_cima) / 16;
+    int baixo    = (y + tamanho - margem_baixo - 1) / 16;
+
+    // verifica os 4 cantos
+    if(array_map[topo][esquerda] != 0) return true;
+    if(array_map[topo][direita]  != 0) return true;
+    if(array_map[baixo][esquerda] != 0) return true;
+    if(array_map[baixo][direita]  != 0) return true;
+
+    return false;
+}
+
+
 
 int main (void){
     al_init_all(); //todos os inits em uma unica função!
@@ -157,6 +178,10 @@ int main (void){
             tiro.x += tiro.velx;
             tiro.y += tiro.vely;
 
+            if(colisao_tiro(tiro.x, tiro.y, array_map)){
+                tiro.ativo = false;
+                printf("Tiro sumiu na borada da tela\n");
+            }
             if(tiro.x < 0 || tiro.x > largura || tiro.y < 0 || tiro.y > altura){
                 tiro.ativo = false;
                 printf("Tiro sumiu na borada da tela\n");

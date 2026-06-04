@@ -1,5 +1,6 @@
 #ifndef AUXILIAR_H
 #define AUXILIAR_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <allegro5/allegro5.h> 
@@ -8,19 +9,9 @@
 #include <stdbool.h>
 #include <math.h>
 #include "player.h"
+#include "maps.h"
 
 typedef const char* string;
-
-typedef struct masps{ //define algumas variaveis de criação de mapa
-    int eixox;
-    int eixoy;
-    int largura;
-    int altura;
-}map;
-
-void printar_chao(ALLEGRO_BITMAP* mapa,map chao); //preenche o fundo com chão
-
-void criar_mapa(int* i_mapa,int* i_mapa_anterior, int array_map[32][32],ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP* mapa, map chao);
 
 void al_init_all();
 

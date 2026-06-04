@@ -62,6 +62,7 @@ void receber_teclas (ALLEGRO_EVENT *evento_primario, int *ultima_tecla_precionad
             case ALLEGRO_KEY_1: tecla->t1 = true; break;
             case ALLEGRO_KEY_2: tecla->t2 = true; break;
             case ALLEGRO_KEY_3: tecla->t3 = true; break;
+            case ALLEGRO_KEY_4: tecla->t4 = true; break;
             case ALLEGRO_KEY_0: tecla->t0 = true; break;
             case ALLEGRO_KEY_R: tecla->r = true; break;
 
@@ -78,6 +79,7 @@ void receber_teclas (ALLEGRO_EVENT *evento_primario, int *ultima_tecla_precionad
             case ALLEGRO_KEY_1: tecla->t1 = false; break;
             case ALLEGRO_KEY_2: tecla->t2 = false; break;
             case ALLEGRO_KEY_3: tecla->t3 = false; break;
+            case ALLEGRO_KEY_4: tecla->t4 = false; break;
             case ALLEGRO_KEY_0: tecla->t0 = false; break;
             case ALLEGRO_KEY_R: tecla->r = false; break;
       }
@@ -89,6 +91,8 @@ void receber_teclas (ALLEGRO_EVENT *evento_primario, int *ultima_tecla_precionad
             *i_mapa = 2;
         }else if(tecla->t3){
             *i_mapa = 3;
+        }else if(tecla->t4){
+            *i_mapa = 4;
         }else if(tecla->t0){
             *i_mapa = 0;
         }
@@ -130,6 +134,10 @@ void printar_tela(teclas* tecla, player* p, int *si, ALLEGRO_BITMAP* image, int 
      processar_teclas(tecla, p, array_map); //desloca o player na tela
      animacao_player(si, tecla); //faz animação do player
      printar_player(image, tecla, *p, *si); // printa o player
+     
+     if(tiro.ativo){
      al_draw_bitmap(image_tiro, tiro.x, tiro.y, 0);
+     }
+
      al_flip_display(); //pega tudo e mostra na tela
 }

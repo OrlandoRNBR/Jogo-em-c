@@ -1,15 +1,8 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-    
-
-#include <stdio.h>
-#include <allegro5/allegro5.h> 
-#include <allegro5/allegro_image.h>
-#include <allegro5/allegro_ttf.h>
-#include <allegro5/allegro_primitives.h>
-#include <stdbool.h>
 #include "auxiliar.h"
+#include "maps.h"
 
 
 typedef struct player{//typedef para definir o player dps vai ter um de inimigos
@@ -31,6 +24,7 @@ typedef struct teclas{ //struct que armazena se as teclas estão sendo precionad
     bool t1;
     bool t2;
     bool t3;
+    bool t4;
     bool t0;
     bool r;
 }teclas;
