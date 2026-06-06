@@ -36,7 +36,7 @@ int main (void){
 
     player p = {16, 16, 5, 3, 32}; //declaração do player posição eixo x, posição eixo y, vidas
     tiro tiro = {0, 0, 0, 0, false};
-    map chao = {0,0,256, 128};//informações do fundo do mapa
+    Chao chao = {0,0,256, 128};//informações do fundo do mapa
     int ultima_tecla_precionada = 0;
     int si = 0;
     /*teclas nessa ordem w, d,s,a,1,2,3,0.*/
@@ -47,6 +47,14 @@ int main (void){
     int skin = 0;
     bool playing = false;
     int x_mouse, y_mouse, x_tiro, y_tiro;
+
+    Node* head = NULL;
+    head = new_node(&p, NULL, head, 'A');
+    insert_node(head, &p, NULL, 'B');
+    insert_node(head, &p, NULL, 'C');
+    insert_node(head, &p, NULL, 'D');
+    insert_node(head, &p, NULL, 'E');
+
 
     /*Carregamento dos ponteros allegro*/
     //cria a janela do jogo no padrão largura x altura 
@@ -164,8 +172,8 @@ int main (void){
                     float dy = y_tiro - p.eixoy;
                     float distancia = hypot(dx, dy);
                     if(distancia != 0){
-                        tiro.x = p.eixox;
-                        tiro.y = p.eixoy;
+                        tiro.x = p.eixox + 8;
+                        tiro.y = p.eixoy + 8;
                         tiro.velx = (dx/distancia)*VELOCIDADE_TIRO;
                         tiro.vely = (dy/distancia)*VELOCIDADE_TIRO;
                         tiro.ativo = true;
@@ -198,6 +206,8 @@ int main (void){
             printar_menu(ui, font, image, p);
         }
     }
+
+    free_list(head);
     al_destroy_all(disp, timer, queue, font, image, mapa, parede, ui, skin_set, skin_tamanho, skin_tiro); //roda todas as finções de liberação da memoria!
     
 }

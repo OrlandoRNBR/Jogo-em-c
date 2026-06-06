@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include "player.h"
 #include "auxiliar.h"
+#include "maps.h"
 
 
 void printar_menu(ALLEGRO_BITMAP* ui, ALLEGRO_FONT* font, ALLEGRO_BITMAP* image, player p){
@@ -129,15 +130,3 @@ void animacao_player(int * si, teclas* tecla){ // manipula a variavel si para na
 }
 
 
-void printar_tela(teclas* tecla, player* p, int *si, ALLEGRO_BITMAP* image, int array_map[32][32], tiro tiro, ALLEGRO_BITMAP* image_tiro){
-    //faz toda a parte visual do jogo
-     processar_teclas(tecla, p, array_map); //desloca o player na tela
-     animacao_player(si, tecla); //faz animação do player
-     printar_player(image, tecla, *p, *si); // printa o player
-     
-     if(tiro.ativo){
-     al_draw_bitmap(image_tiro, tiro.x, tiro.y, 0);
-     }
-
-     al_flip_display(); //pega tudo e mostra na tela
-}

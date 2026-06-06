@@ -3,6 +3,47 @@
 
 
 
+Node* new_node(player* p, FILE*mapa, Node* next, char l){
+    Node* node = malloc(sizeof(Node));
+    node->mapa = NULL;
+    node->l = l;
+    node->player = p;
+    node->next = next;
+
+    return node;
+}
+
+
+Node* insert_node(Node* node, player* p, FILE*mapa, char l){
+   if(node == NULL){
+       Node* n = new_node(p, mapa, node, l);
+       n->next = n;
+       return n;
+   }
+
+   return node->next = new_node(p, mapa, node, l);
+}
+
+Node* remove_node_after(Node* node){
+   if(node == NULL)
+       return NULL;
+
+   if(node->next == node){
+       free(node);
+       return NULL;
+   }
+
+   Node* p = node->next;
+   node->next = p->next;
+
+   free(p);
+   return node;
+}
+
+void free_list(Node* node) {
+   while(node != NULL)
+       node = remove_node_after(node);
+}
 
 
 void al_init_all(){

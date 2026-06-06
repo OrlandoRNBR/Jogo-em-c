@@ -3,23 +3,13 @@
 
 #include "player.h"
 #include "auxiliar.h"
-
-typedef struct maps{ //define algumas variaveis de criação de mapa
-    int eixox;
-    int eixoy;
-    int largura;
-    int altura;
-}map;
-
-typedef struct Treenode{
-    map m;
-}Treenode;
+#include "estructuras.h"
 
 
-void printar_chao(ALLEGRO_BITMAP* mapa,map chao); //preenche o fundo com chão
+void printar_chao(ALLEGRO_BITMAP* mapa,Chao chao); //preenche o fundo com chão
 
-void criar_mapa(int* i_mapa,int* i_mapa_anterior, int array_map[32][32],ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP* mapa, map chao);
+void criar_mapa(int* i_mapa,int* i_mapa_anterior, int array_map[32][32],ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP* mapa, Chao chao);
 
-
+void printar_tela(teclas* tecla, player* p, int *si, ALLEGRO_BITMAP* image, int array_map[32][32], tiro tiro, ALLEGRO_BITMAP* image_tiro);
 
 #endif

@@ -6,12 +6,21 @@
 #include <allegro5/allegro5.h> 
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_ttf.h>
+#include <allegro5/allegro_primitives.h>
 #include <stdbool.h>
 #include <math.h>
 #include "player.h"
 #include "maps.h"
+#include "estructuras.h"
 
-typedef const char* string;
+
+Node* new_node(player* p, FILE*mapa, Node* next, char l);
+
+Node* insert_node(Node* node, player* p, FILE*mapa, char l);
+
+Node* remove_node_after(Node* node);
+
+void free_list(Node* node);
 
 void al_init_all();
 
