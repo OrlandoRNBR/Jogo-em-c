@@ -16,7 +16,15 @@ void printar_chao(ALLEGRO_BITMAP* mapa,Chao chao){ //cada função dessa compoem
 
 
 
+void new_mapa(Node* head,int array_map[32][32], ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP* mapa, Chao chao){
+    
+    Node* p = head;
+    //while(p != head){
+        printf("%d\n", p->l);
+      //  p = p->next;
+    //}
 
+}
 
 
     /*cria o mapa com base em algum arquivo*/
@@ -43,7 +51,6 @@ void criar_mapa(int* i_mapa,int* i_mapa_anterior, int array_map[32][32],ALLEGRO_
         }        
     *i_mapa_anterior = *i_mapa;
     }  
-
 
     /*desenha o mapa carregado */
 printar_chao(mapa, chao);

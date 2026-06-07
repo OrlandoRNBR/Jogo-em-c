@@ -3,7 +3,7 @@
 
 
 
-Node* new_node(player* p, FILE*mapa, Node* next, char l){
+Node* new_node(player* p, FILE*mapa, Node* next, int l){
     Node* node = malloc(sizeof(Node));
     node->mapa = NULL;
     node->l = l;
@@ -14,14 +14,14 @@ Node* new_node(player* p, FILE*mapa, Node* next, char l){
 }
 
 
-Node* insert_node(Node* node, player* p, FILE*mapa, char l){
+Node* insert_node(Node* node, player* p, FILE*mapa, int l){
    if(node == NULL){
        Node* n = new_node(p, mapa, node, l);
        n->next = n;
        return n;
    }
 
-   return node->next = new_node(p, mapa, node, l);
+   return node->next = new_node(p, mapa, node->next, l);
 }
 
 Node* remove_node_after(Node* node){

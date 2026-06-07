@@ -27,7 +27,7 @@ typedef struct maps{ //define algumas variaveis de criação de mapa
 typedef struct node{
     player* player;
     FILE* mapa;
-    char l;
+    int l;
     struct node* next; 
 }Node;
 

@@ -5,6 +5,7 @@
 #include "auxiliar.h"
 #include "estructuras.h"
 
+void new_mapa(Node* head,int array_map[32][32], ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP* mapa, Chao chao);
 
 void printar_chao(ALLEGRO_BITMAP* mapa,Chao chao); //preenche o fundo com chão
 

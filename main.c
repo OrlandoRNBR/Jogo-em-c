@@ -49,11 +49,11 @@ int main (void){
     int x_mouse, y_mouse, x_tiro, y_tiro;
 
     Node* head = NULL;
-    head = new_node(&p, NULL, head, 'A');
-    insert_node(head, &p, NULL, 'B');
-    insert_node(head, &p, NULL, 'C');
-    insert_node(head, &p, NULL, 'D');
-    insert_node(head, &p, NULL, 'E');
+    head = new_node(&p, NULL, head, 1);
+    insert_node(head, &p, NULL, 5);
+    insert_node(head, &p, NULL, 4);
+    insert_node(head, &p, NULL, 3);
+    insert_node(head, &p, NULL, 2);
 
 
     /*Carregamento dos ponteros allegro*/
@@ -111,6 +111,15 @@ int main (void){
     al_register_all_event_source(queue, timer, disp);
     ALLEGRO_EVENT evento_primario; // armazena os eventos do jogo
     al_start_timer(timer); //inicia o rologio 
+
+    printf("%d", head->l);
+    printf("%d", head->next->l);
+    printf("%d", head->next->next->l);
+    printf("%d", head->next->next->next->l);
+    printf("%d", head->next->next->next->next->l);
+    printf("============\n");
+    //new_mapa(head, array_map, parede, mapa, chao);
+    printf("A");
 
     while(1){
         al_wait_for_event(queue, &evento_primario); //pausa o loping até algun evento aocntecer
@@ -206,8 +215,9 @@ int main (void){
             printar_menu(ui, font, image, p);
         }
     }
-
+    printf("aaa\n");
     free_list(head);
+    printf("aaa\n");
     al_destroy_all(disp, timer, queue, font, image, mapa, parede, ui, skin_set, skin_tamanho, skin_tiro); //roda todas as finções de liberação da memoria!
     
 }
