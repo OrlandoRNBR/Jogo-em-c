@@ -46,15 +46,14 @@ int main (void){
     int i_mapa_anterior = -1;
     int skin = 0;
     bool playing = false;
-    int x_mouse, y_mouse, x_tiro, y_tiro;
+    int x_tiro, y_tiro;
 
-    Node* head = NULL;
-    head = new_node(&p, NULL, head, 1);
-    insert_node(head, &p, NULL, 5);
-    insert_node(head, &p, NULL, 4);
-    insert_node(head, &p, NULL, 3);
-    insert_node(head, &p, NULL, 2);
-
+    Node* node = NULL;
+    node = insert_node(node, NULL, 0, "maps/mapa_default.txt");
+    node = insert_node(node, NULL, 1, "maps/mapa1.txt");
+    node = insert_node(node, NULL, 2, "maps/mapa2.txt");
+    node = insert_node(node, NULL, 3, "maps/mapa3.txt");
+    node = insert_node(node, NULL, 4, "maps/mapa4.txt");
 
     /*Carregamento dos ponteros allegro*/
     //cria a janela do jogo no padrão largura x altura 
@@ -68,20 +67,22 @@ int main (void){
     }   
 
     /*carregamento dos sprites do jogo*/
-    int skin_tamanho = 5;
-    ALLEGRO_BITMAP* skin_set[5];
+    int skin_tamanho = 6;
+    ALLEGRO_BITMAP* skin_set[skin_tamanho];
     skin_set [0] = al_load_bitmap("sprites/ash.png");
     skin_set [1] = al_load_bitmap("sprites/luiza.png");
     skin_set [2] = al_load_bitmap("sprites/kayky.png");
     skin_set [3] = al_load_bitmap("sprites/david.png");
     skin_set [4] = al_load_bitmap("sprites/rayssa.png");
+    skin_set [5] = al_load_bitmap("sprites/martin.png");
 
-    ALLEGRO_BITMAP* skin_tiro[5];
+    ALLEGRO_BITMAP* skin_tiro[skin_tamanho];
     skin_tiro [0] = al_load_bitmap("sprites/bulet_ahs.png");
     skin_tiro [1] = al_load_bitmap("sprites/bulet_luiza.png");
     skin_tiro [2] = al_load_bitmap("sprites/bulet.png");
     skin_tiro [3] = al_load_bitmap("sprites/bulet_david.png");
-    skin_tiro [4] = al_load_bitmap("sprites/bulet.png");
+    skin_tiro [4] = al_load_bitmap("sprites/bulet_rayssa.png");
+    skin_tiro [5] = al_load_bitmap("sprites/bulet_martin.png");
 
     ALLEGRO_BITMAP* image = al_load_bitmap("sprites/ash.png");
     ALLEGRO_BITMAP* mapa = al_load_bitmap("sprites/chão.png");
@@ -111,15 +112,6 @@ int main (void){
     al_register_all_event_source(queue, timer, disp);
     ALLEGRO_EVENT evento_primario; // armazena os eventos do jogo
     al_start_timer(timer); //inicia o rologio 
-
-    printf("%d", head->l);
-    printf("%d", head->next->l);
-    printf("%d", head->next->next->l);
-    printf("%d", head->next->next->next->l);
-    printf("%d", head->next->next->next->next->l);
-    printf("============\n");
-    //new_mapa(head, array_map, parede, mapa, chao);
-    printf("A");
 
     while(1){
         al_wait_for_event(queue, &evento_primario); //pausa o loping até algun evento aocntecer
@@ -165,12 +157,9 @@ int main (void){
         if(playing){
         /*recebe as teclas usadas no jogo e declara como true ou false*/
         receber_teclas(&evento_primario, &ultima_tecla_precionada, &tecla, &i_mapa ); 
+        if(evento_primario.type == ALLEGRO_EVENT_KEY_DOWN)
+        if(evento_primario.keyboard.keycode == ALLEGRO_KEY_R) node = node->next;
 
-        if(evento_primario.type == ALLEGRO_EVENT_MOUSE_AXES){
-            x_mouse = evento_primario.mouse.x;
-            y_mouse = evento_primario.mouse.y;
-        }
-       
         if(evento_primario.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
             if(evento_primario.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT){
                 x_tiro = evento_primario.mouse.x;
@@ -206,18 +195,17 @@ int main (void){
         }
 
         if(evento_primario.type == ALLEGRO_EVENT_TIMER && al_is_event_queue_empty(queue)) {
-            criar_mapa(&i_mapa,&i_mapa_anterior, array_map, parede, mapa, chao);
+            criar_mapa(&i_mapa,&i_mapa_anterior, array_map, parede, mapa, chao, node, &p);
            
             printar_tela(&tecla, &p, &si, image, array_map, tiro, image_tiro); //um misto de funções que fica atualizando a tela a cada tick
+            
         }
         }else{
         
             printar_menu(ui, font, image, p);
         }
     }
-    printf("aaa\n");
-    free_list(head);
-    printf("aaa\n");
+
     al_destroy_all(disp, timer, queue, font, image, mapa, parede, ui, skin_set, skin_tamanho, skin_tiro); //roda todas as finções de liberação da memoria!
-    
+    free_list(node); //mata a lista encadeada
 }

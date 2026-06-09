@@ -26,11 +26,11 @@ typedef struct maps{ //define algumas variaveis de criação de mapa
 
 typedef struct node{
     player* player;
+    string endereco;
     FILE* mapa;
     int l;
     struct node* next; 
 }Node;
-
 
 typedef struct teclas{ //struct que armazena se as teclas estão sendo precionadas ou não
     bool w;
@@ -42,7 +42,6 @@ typedef struct teclas{ //struct que armazena se as teclas estão sendo precionad
     bool t3;
     bool t4;
     bool t0;
-    bool r;
 }teclas;
 
 

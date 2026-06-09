@@ -3,31 +3,34 @@
 
 
 
-Node* new_node(player* p, FILE*mapa, Node* next, int l){
+Node* new_node(FILE*mapa, Node* next, int l, string endereco){
     Node* node = malloc(sizeof(Node));
-    node->mapa = NULL;
+    node->mapa = mapa;
     node->l = l;
-    node->player = p;
+    node->endereco  = endereco;
     node->next = next;
 
     return node;
 }
 
-
-Node* insert_node(Node* node, player* p, FILE*mapa, int l){
+Node* insert_node(Node* node, FILE*mapa, int l, string endereco){
    if(node == NULL){
-       Node* n = new_node(p, mapa, node, l);
+       Node* n = new_node(mapa, NULL, l , endereco);
        n->next = n;
        return n;
    }
 
-   return node->next = new_node(p, mapa, node->next, l);
+   return node->next = new_node(mapa, node->next, l, endereco);
 }
 
 Node* remove_node_after(Node* node){
    if(node == NULL)
        return NULL;
 
+    if(node->next == NULL){
+       free(node);
+       return NULL;
+   }
    if(node->next == node){
        free(node);
        return NULL;
@@ -44,7 +47,6 @@ void free_list(Node* node) {
    while(node != NULL)
        node = remove_node_after(node);
 }
-
 
 void al_init_all(){
     al_init(); //inicia a biblioteca do alegro

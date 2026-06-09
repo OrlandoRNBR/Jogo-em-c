@@ -65,7 +65,6 @@ void receber_teclas (ALLEGRO_EVENT *evento_primario, int *ultima_tecla_precionad
             case ALLEGRO_KEY_3: tecla->t3 = true; break;
             case ALLEGRO_KEY_4: tecla->t4 = true; break;
             case ALLEGRO_KEY_0: tecla->t0 = true; break;
-            case ALLEGRO_KEY_R: tecla->r = true; break;
 
             
         }
@@ -82,7 +81,6 @@ void receber_teclas (ALLEGRO_EVENT *evento_primario, int *ultima_tecla_precionad
             case ALLEGRO_KEY_3: tecla->t3 = false; break;
             case ALLEGRO_KEY_4: tecla->t4 = false; break;
             case ALLEGRO_KEY_0: tecla->t0 = false; break;
-            case ALLEGRO_KEY_R: tecla->r = false; break;
       }
     }
 
