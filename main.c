@@ -8,13 +8,55 @@
 //teste do tiro do personagem pegar imagem de tiro
 #define VELOCIDADE_TIRO 8.0
 
+/*
+======================================================================================================================
+
+       (\__/)
+       (•ㅅ•) o que acha junin?
+   ＿ノ ヽ ノ＼__
+ /  `/ ⌒Ｙ⌒ Ｙ  ヽ
+(   (三ヽ人  /    |
+|  ﾉ⌒＼ ￣￣ヽ  ノ
+ヽ＿＿＿＞､＿＿_／
+    ｜( 王 ﾉ〈   (\__/)
+    /ﾐ`ー―彡\   (•ㅅ•)bem loko
+
+
+O jogo ta documentado então da uma lida rapida pelo menos no main.c ja tem a colisão dos inimigos e
+um struct se for dar uma olhada ta la na biblioteca estruturas.h o inimigo não precisa ter hp ele morre com um tiro só
+======================================================================================================================
+*/
+
+
+bool colisao_enemy(int x, int y ,int array_map[32][32], int tamanho ){
+    /*cria a colisão do jogo verificando todas as direções do personagem*/
+    //a margem serve para corrigir a colisão em relação a parede
+    int margem_cima = 16;
+    int margem_baixo = 16;
+    
+    int esquerda = (x + margem_cima) / 16;//verifica a coordenada em rela ção ao indice do array map i = x e j = y
+    int direita  = (x + tamanho - margem_baixo - 1) / 16;
+    int topo     = (y + margem_cima) / 16;
+    int baixo    = (y + tamanho - margem_baixo - 1) / 16;
+
+    // verifica os 4 cantos
+    if(array_map[topo][esquerda] != 0) return true;
+    if(array_map[topo][direita]  != 0) return true;
+    if(array_map[baixo][esquerda] != 0) return true;
+    if(array_map[baixo][direita]  != 0) return true;
+
+    return false;
+}
 
 bool colisao_tiro(int x, int y ,int array_map[32][32]){
     /*cria a colisão do jogo verificando todas as direções do personagem*/
-    int tamanho = 0; 
+
+    int tamanho = 8; 
+    //a margem serve para corrigir a colisão em relação a parede
     int margem_cima = 2;
     int margem_baixo = 1;
     
+    //verifica a coordenada em rela ção ao indice do array map i = x e j = y
     int esquerda = (x + margem_cima) / 16;
     int direita  = (x + tamanho - margem_baixo - 1) / 16;
     int topo     = (y + margem_cima) / 16;
@@ -42,18 +84,24 @@ int main (void){
     /*teclas nessa ordem w, d,s,a,1,2,3,0.*/
     teclas tecla = {false, false, false, false, false, false, false, false, false};
     int array_map[32][32];
-    int i_mapa = 0;
-    int i_mapa_anterior = -1;
-    int skin = 0;
+    
     bool playing = false;
     int x_tiro, y_tiro;
+    enemy inimigos[5] = { //inicialização de um vetor de inimigos
+        {true, 26, 26, 32},
+        {false, 26, 26, 32},
+        {false, 26, 26, 32},
+        {false, 26, 26, 32},
+        {false, 26, 26, 32}
+    };
 
-    Node* node = NULL;
-    node = insert_node(node, NULL, 0, "maps/mapa_default.txt");
-    node = insert_node(node, NULL, 1, "maps/mapa1.txt");
-    node = insert_node(node, NULL, 2, "maps/mapa2.txt");
-    node = insert_node(node, NULL, 3, "maps/mapa3.txt");
-    node = insert_node(node, NULL, 4, "maps/mapa4.txt");
+    Node* node = NULL; //inicialização da lista encadeada com um id numerico e o endereço do mapa.
+    node = insert_node(node, 0, "maps/mapa_default.txt");
+    node = insert_node(node, 1, "maps/mapa1.txt");
+    node = insert_node(node, 2, "maps/mapa2.txt");
+    node = insert_node(node, 3, "maps/mapa3.txt");
+    node = insert_node(node, 4, "maps/mapa4.txt");
+    node = node->next; //corrige para começar no primeiro mapa.
 
     /*Carregamento dos ponteros allegro*/
     //cria a janela do jogo no padrão largura x altura 
@@ -66,9 +114,12 @@ int main (void){
         return -1; // Encerra o programa de forma segura
     }   
 
+    ALLEGRO_BITMAP* inimigo_sprite = al_load_bitmap("sprites/vampires.png");
+
     /*carregamento dos sprites do jogo*/
+    int skin = 0;
     int skin_tamanho = 6;
-    ALLEGRO_BITMAP* skin_set[skin_tamanho];
+    ALLEGRO_BITMAP* skin_set[skin_tamanho]; //skin dos personagens
     skin_set [0] = al_load_bitmap("sprites/ash.png");
     skin_set [1] = al_load_bitmap("sprites/luiza.png");
     skin_set [2] = al_load_bitmap("sprites/kayky.png");
@@ -76,7 +127,7 @@ int main (void){
     skin_set [4] = al_load_bitmap("sprites/rayssa.png");
     skin_set [5] = al_load_bitmap("sprites/martin.png");
 
-    ALLEGRO_BITMAP* skin_tiro[skin_tamanho];
+    ALLEGRO_BITMAP* skin_tiro[skin_tamanho];//skin das munições
     skin_tiro [0] = al_load_bitmap("sprites/bulet_ahs.png");
     skin_tiro [1] = al_load_bitmap("sprites/bulet_luiza.png");
     skin_tiro [2] = al_load_bitmap("sprites/bulet.png");
@@ -87,7 +138,8 @@ int main (void){
     ALLEGRO_BITMAP* image = al_load_bitmap("sprites/ash.png");
     ALLEGRO_BITMAP* mapa = al_load_bitmap("sprites/chão.png");
     ALLEGRO_BITMAP* ui = al_load_bitmap("sprites/ui.png");
-    ALLEGRO_BITMAP* parede[10]; 
+    
+    ALLEGRO_BITMAP* parede[10]; //inicializa os sprites da parede
     parede [0] = al_load_bitmap("sprites/void.png");
     parede [1] = al_load_bitmap("sprites/parede1.png");
     parede [2] = al_load_bitmap("sprites/parede2.png");
@@ -116,93 +168,107 @@ int main (void){
     while(1){
         al_wait_for_event(queue, &evento_primario); //pausa o loping até algun evento aocntecer
 
-        if(skin >= skin_tamanho) skin = 0;
+        if(skin >= skin_tamanho) skin = 0; //verificação se ele selecionou um indice do vetor que existe
         
-        ALLEGRO_BITMAP* image = skin_set[skin];
-        ALLEGRO_BITMAP* image_tiro = skin_tiro[skin];
+        ALLEGRO_BITMAP* image = skin_set[skin];//seleciona a skin
+        ALLEGRO_BITMAP* image_tiro = skin_tiro[skin]; //seleciona o tiro
 
      // verifica se p evento que acabou de acontecer foi fechar a janela
         if(evento_primario.type == ALLEGRO_EVENT_DISPLAY_CLOSE || evento_primario.keyboard.keycode == ALLEGRO_KEY_ESCAPE) break;
 
         if(evento_primario.type == ALLEGRO_EVENT_KEY_DOWN){
-            if(evento_primario.keyboard.keycode == ALLEGRO_KEY_P) playing = true;
-            if(evento_primario.keyboard.keycode == ALLEGRO_KEY_M) playing = false; 
+            if(evento_primario.keyboard.keycode == ALLEGRO_KEY_P) playing = true; //inicia o jogo
+            if(evento_primario.keyboard.keycode == ALLEGRO_KEY_M) playing = false; //abre o menu
         }
 
 
-        if(!playing){
+        if(!playing){//verifica se o esta no menu
            
+            //verifica se você esta clicando no primeiro botão do menu
             if(evento_primario.mouse.x > 152 && evento_primario.mouse.y > 187 && evento_primario.mouse.x < 364 && evento_primario.mouse.y < 222 ){
                 if(evento_primario.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
                     if(evento_primario.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT) playing = true;
             }
+            //verifica se você esta clicando no segundo botão do menu
             if(evento_primario.mouse.x > 152 && evento_primario.mouse.y > 259 && evento_primario.mouse.x < 364 && evento_primario.mouse.y < 294){
                 if(evento_primario.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
                     if(evento_primario.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT) skin++;
 
             }
+            //verifica se você esta clicando no terceiro botão do menu
             if(evento_primario.mouse.x > 152 && evento_primario.mouse.y > 331 && evento_primario.mouse.x < 364 && evento_primario.mouse.y < 366){
                 if(evento_primario.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
                     if(evento_primario.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT) printf("Função em desenvolvimento!\nMenu de configurações não implementado!\n");
             
             }
+            //verifica se você esta clicando no quarto botão do menu
             if(evento_primario.mouse.x > 152 && evento_primario.mouse.y > 403 && evento_primario.mouse.x < 364 && evento_primario.mouse.y < 438){
                 if(evento_primario.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
                     if(evento_primario.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT) break;
 
             }
-            
         }
-
+       
         if(playing){
         /*recebe as teclas usadas no jogo e declara como true ou false*/
-        receber_teclas(&evento_primario, &ultima_tecla_precionada, &tecla, &i_mapa ); 
-        if(evento_primario.type == ALLEGRO_EVENT_KEY_DOWN)
-        if(evento_primario.keyboard.keycode == ALLEGRO_KEY_R) node = node->next;
+       
+        receber_teclas(&evento_primario, &ultima_tecla_precionada, &tecla); //recebe as teclas
+      
+        if(evento_primario.type == ALLEGRO_EVENT_KEY_DOWN) //verifica se alguma tecla foi precionada
+        if(evento_primario.keyboard.keycode == ALLEGRO_KEY_R) node = node->next; //verifica se essa tecala é R se for muda para o proximo mapa.
+       
 
-        if(evento_primario.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
-            if(evento_primario.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT){
-                x_tiro = evento_primario.mouse.x;
+        if(evento_primario.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){ //verifica se algum botão do mause foi precionado 
+            if(evento_primario.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT){// se for o botão esquerdo faz esse bloco
+                x_tiro = evento_primario.mouse.x;//guarda as coordenadas do mouse
                 y_tiro = evento_primario.mouse.y;
 
-                if(!tiro.ativo){
+                if(!tiro.ativo){//verifica se tem tiro na tela
+                    //calcula a velocidade do tiro
                     float dx = x_tiro - p.eixox;
                     float dy = y_tiro - p.eixoy;
                     float distancia = hypot(dx, dy);
-                    if(distancia != 0){
-                        tiro.x = p.eixox + 8;
-                        tiro.y = p.eixoy + 8;
+
+                    if(distancia != 0){ //se a distancia do tiro for diferente de 0 isso acontece
+                        //define a posição do tiro no player
+                        tiro.x = p.eixox + 16;
+                        tiro.y = p.eixoy + 16;
+                        //define a velocidade do tiro
                         tiro.velx = (dx/distancia)*VELOCIDADE_TIRO;
                         tiro.vely = (dy/distancia)*VELOCIDADE_TIRO;
+                        //define o tiro como ativo
                         tiro.ativo = true;
                     }
                 }
             }
         }
-
-        if(tiro.ativo){
+       
+        if(tiro.ativo){//se tiro estiver ativo isso acontece
+            //desloca o tiro no mapa
             tiro.x += tiro.velx;
             tiro.y += tiro.vely;
 
-            if(colisao_tiro(tiro.x, tiro.y, array_map)){
-                tiro.ativo = false;
+            if(colisao_tiro(tiro.x, tiro.y, array_map)){//verifca se o tiro bateu em alguma parede
+                tiro.ativo = false; //desativa o tiro
                 printf("Tiro sumiu na borada da tela\n");
             }
-            if(tiro.x < 0 || tiro.x > largura || tiro.y < 0 || tiro.y > altura){
-                tiro.ativo = false;
+            if(tiro.x < 0 || tiro.x > largura || tiro.y < 0 || tiro.y > altura){ //verfica se p tiro bateu na borda do mapa
+                tiro.ativo = false;//desativa o tiro
                 printf("Tiro sumiu na borada da tela\n");
             }
         }
 
-        if(evento_primario.type == ALLEGRO_EVENT_TIMER && al_is_event_queue_empty(queue)) {
-            criar_mapa(&i_mapa,&i_mapa_anterior, array_map, parede, mapa, chao, node, &p);
+
+        if(evento_primario.type == ALLEGRO_EVENT_TIMER && al_is_event_queue_empty(queue)) {//verifica se a fila de eventos do jogo esta vazia
+    
+            node = criar_mapa(array_map, parede, mapa, chao, node, &p);//cria e printa o mapa na tela
            
-            printar_tela(&tecla, &p, &si, image, array_map, tiro, image_tiro); //um misto de funções que fica atualizando a tela a cada tick
+            printar_tela(&tecla, &p, &si, image, array_map, tiro, image_tiro, inimigos, inimigo_sprite); //um misto de funções que fica atualizando a tela a cada tick
             
         }
         }else{
         
-            printar_menu(ui, font, image, p);
+            printar_menu(ui, font, image, p);//printa o menu na tela
         }
     }
 

@@ -5,6 +5,13 @@
 
 typedef const char* string;
 
+typedef struct enemys{ //estrutura do inimigo
+    bool alive;
+    int x, y;
+    int tamanho;
+
+}enemy;
+
 typedef struct player{//typedef para definir o player dps vai ter um de inimigos
     //posição e deslocamento do player
     int eixox; 
@@ -24,10 +31,9 @@ typedef struct maps{ //define algumas variaveis de criação de mapa
     int altura;
 }Chao;
 
-typedef struct node{
+typedef struct node{//lista encadeada do mapa
     player* player;
     string endereco;
-    FILE* mapa;
     int l;
     struct node* next; 
 }Node;
@@ -45,7 +51,7 @@ typedef struct teclas{ //struct que armazena se as teclas estão sendo precionad
 }teclas;
 
 
-typedef struct{
+typedef struct{//struct do tiro
     float x, y;
     float velx, vely;
     bool ativo;

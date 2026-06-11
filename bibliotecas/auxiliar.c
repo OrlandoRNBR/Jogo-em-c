@@ -3,9 +3,8 @@
 
 
 
-Node* new_node(FILE*mapa, Node* next, int l, string endereco){
+Node* new_node(Node* next, int l, string endereco){ //cria um nó na lista encadeada
     Node* node = malloc(sizeof(Node));
-    node->mapa = mapa;
     node->l = l;
     node->endereco  = endereco;
     node->next = next;
@@ -13,17 +12,17 @@ Node* new_node(FILE*mapa, Node* next, int l, string endereco){
     return node;
 }
 
-Node* insert_node(Node* node, FILE*mapa, int l, string endereco){
+Node* insert_node(Node* node, int l, string endereco){//cria um nó e eoncaixa ele na lista circular
    if(node == NULL){
-       Node* n = new_node(mapa, NULL, l , endereco);
+       Node* n = new_node(NULL, l , endereco);
        n->next = n;
        return n;
    }
 
-   return node->next = new_node(mapa, node->next, l, endereco);
+   return node->next = new_node(node->next, l, endereco);
 }
 
-Node* remove_node_after(Node* node){
+Node* remove_node_after(Node* node){ //remove o proximo nó
    if(node == NULL)
        return NULL;
 
@@ -43,7 +42,7 @@ Node* remove_node_after(Node* node){
    return node;
 }
 
-void free_list(Node* node) {
+void free_list(Node* node) {//remove todos os nós
    while(node != NULL)
        node = remove_node_after(node);
 }

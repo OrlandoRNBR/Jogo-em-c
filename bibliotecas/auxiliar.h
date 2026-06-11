@@ -14,9 +14,9 @@
 #include "estructuras.h"
 
 
-Node* new_node(FILE*mapa, Node* next, int l, string endereco);
+Node* new_node(Node* next, int l, string endereco);
 
-Node* insert_node(Node* node, FILE*mapa, int l, string endereco);
+Node* insert_node(Node* node, int l, string endereco);
 
 Node* remove_node_after(Node* node);
 
