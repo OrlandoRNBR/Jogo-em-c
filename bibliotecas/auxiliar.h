@@ -7,12 +7,23 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_acodec.h>
+#include <allegro5/allegro_audio.h>
+#include <curl/curl.h>
+#include <cjson/cJSON.h>
 #include <stdbool.h>
 #include <math.h>
 #include "player.h"
 #include "maps.h"
 #include "estructuras.h"
 
+#define CRIES_PATH "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/"
+
+void download_file(string url, string file_name);
+
+cJSON* read_json(const char* filename);
+
+void process_json(const char* filename);
 
 Node* new_node(Node* next, int l, string endereco);
 

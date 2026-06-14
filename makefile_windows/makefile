@@ -4,7 +4,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra -std=gnu11 -mcmodel=medium -I./bibliotecas -D__USE_MINGW_ANSI_STDIO=1
 
 # Bibliotecas do Allegro
-LDLIBS = -lallegro -lallegro_font -lallegro_ttf -lallegro_image -lallegro_primitives -lallegro_acodec -lallegro_audio
+LDLIBS = -lallegro -lallegro_font -lallegro_ttf -lallegro_image -lallegro_primitives -lallegro_acodec -lallegro_audio -lcjson -lcurl
 
 # Fontes e Objetos
 SRCS = main.c bibliotecas/player.c bibliotecas/auxiliar.c bibliotecas/maps.c

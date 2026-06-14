@@ -28,6 +28,13 @@ um struct se for dar uma olhada ta la na biblioteca estruturas.h o inimigo não 
 */
 
 
+
+
+
+
+
+
+
 bool colisao_enemy(int x, int y ,int array_map[32][32], int tamanho ){
     /*cria a colisão do jogo verificando todas as direções do personagem*/
     //a margem serve para corrigir a colisão em relação a parede
@@ -86,9 +93,9 @@ int main (void){
     int array_map[32][32];
     
     bool playing = false;
-    int x_tiro, y_tiro;
+    int x_tiro, y_tiro; 
     enemy inimigos[5] = { //inicialização de um vetor de inimigos
-        {true, 26, 26, 32},
+        {false, 26, 26, 32},
         {false, 26, 26, 32},
         {false, 26, 26, 32},
         {false, 26, 26, 32},
@@ -102,6 +109,8 @@ int main (void){
     node = insert_node(node, 3, "maps/mapa3.txt");
     node = insert_node(node, 4, "maps/mapa4.txt");
     node = node->next; //corrige para começar no primeiro mapa.
+
+    
 
     /*Carregamento dos ponteros allegro*/
     //cria a janela do jogo no padrão largura x altura 
@@ -119,7 +128,7 @@ int main (void){
     /*carregamento dos sprites do jogo*/
     int skin = 0;
     int skin_tamanho = 6;
-    ALLEGRO_BITMAP* skin_set[skin_tamanho]; //skin dos personagens
+    ALLEGRO_BITMAP** skin_set = malloc(skin_tamanho*sizeof(ALLEGRO_BITMAP*)); //skin dos personagens
     skin_set [0] = al_load_bitmap("sprites/ash.png");
     skin_set [1] = al_load_bitmap("sprites/luiza.png");
     skin_set [2] = al_load_bitmap("sprites/kayky.png");
@@ -127,7 +136,7 @@ int main (void){
     skin_set [4] = al_load_bitmap("sprites/rayssa.png");
     skin_set [5] = al_load_bitmap("sprites/martin.png");
 
-    ALLEGRO_BITMAP* skin_tiro[skin_tamanho];//skin das munições
+    ALLEGRO_BITMAP** skin_tiro = malloc(skin_tamanho*sizeof(ALLEGRO_BITMAP*));//skin das munições
     skin_tiro [0] = al_load_bitmap("sprites/bulet_ahs.png");
     skin_tiro [1] = al_load_bitmap("sprites/bulet_luiza.png");
     skin_tiro [2] = al_load_bitmap("sprites/bulet.png");
@@ -139,7 +148,7 @@ int main (void){
     ALLEGRO_BITMAP* mapa = al_load_bitmap("sprites/chão.png");
     ALLEGRO_BITMAP* ui = al_load_bitmap("sprites/ui.png");
     
-    ALLEGRO_BITMAP* parede[10]; //inicializa os sprites da parede
+    ALLEGRO_BITMAP** parede = malloc(10*sizeof(ALLEGRO_BITMAP*)); //inicializa os sprites da parede
     parede [0] = al_load_bitmap("sprites/void.png");
     parede [1] = al_load_bitmap("sprites/parede1.png");
     parede [2] = al_load_bitmap("sprites/parede2.png");
