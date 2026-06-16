@@ -148,9 +148,5 @@ void printar_tela(teclas* tecla, player* p, int *si, ALLEGRO_BITMAP* image, int 
      if(tiro.ativo){
      al_draw_bitmap(image_tiro, tiro.x, tiro.y, 0);
      }
-     
-     al_draw_rectangle(192, 512, 320, 496, al_map_rgb(255, 0, 0), 3);
-     //(p->eixox < 192 || p->eixox > 320 || p->eixoy < 512 || p->eixoy > 496){
-
      al_flip_display(); //pega tudo e mostra na tela
 }

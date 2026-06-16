@@ -46,29 +46,20 @@ void process_json(string file_name){
    cJSON *json = read_json(file_name);//aramzena as informações carregadas em um
    assert(json != NULL);
 
-   cJSON *name = cJSON_GetObjectItem(json, "name");
-   printf("nome do pokémon: %s\n", name? name->valuestring: "null");
+   cJSON *cries = cJSON_GetObjectItem(json, "cries");
+   assert(cries != NULL);
 
-   cJSON *types = cJSON_GetObjectItem(json, "types");
-   puts("tipos:");
-   for(cJSON* t = types->child; t != NULL; t = t->next){
-     cJSON *type = cJSON_GetObjectItem(t, "type");
-     cJSON *name = cJSON_GetObjectItem(type, "name");
-     printf(" -- %s\n", name->valuestring);
-   }
-  cJSON *sprites = cJSON_GetObjectItem(json, "sprites");
-   assert(sprites != NULL);
+   cJSON *latest = cJSON_GetObjectItem(cries, "latest");
+   assert(latest != NULL);
 
-   cJSON *front_default = cJSON_GetObjectItem(sprites, "front_default");
-   assert(front_default != NULL);
-
-   const char* url = front_default->valuestring;
-   const char* image_filename = url + strlen(CRIES_PATH);
-   printf("arquivo de imagem: %s\n", image_filename);
-   download_file(url, image_filename);
-
+   const char* url_crie = latest->valuestring;
+   const char* cries_filename = url_crie + strlen(CRIES_PATH);//+strlen("latest/");
+   printf("arquivo de audio: %s\n", cries_filename);
+   download_file(url_crie, cries_filename);
+    rename("649.ogg", "disparo.ogg");
    cJSON_Delete(json);
 }
+
 
 Node* new_node(Node* next, int l, string endereco){ //cria um nó na lista encadeada
     Node* node = malloc(sizeof(Node));
@@ -122,14 +113,18 @@ void al_init_all(){
     al_install_keyboard(); //informa o sistema operacional que o programa vai capiturar teclas
     al_install_mouse(); //informa o codigo que ele precisa olhar as informações do mouse
     al_init_primitives_addon();
+    al_install_audio();
     al_init_acodec_addon();
+    al_reserve_samples(5);
 }
 
-void al_destroy_all(ALLEGRO_DISPLAY* disp, ALLEGRO_TIMER* timer, ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT* font, ALLEGRO_BITMAP* image, ALLEGRO_BITMAP* mapa, ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP* ui, ALLEGRO_BITMAP* skin[], int skin_tamanho, ALLEGRO_BITMAP* skin_tiro[]){
+void al_destroy_all(ALLEGRO_DISPLAY* disp, ALLEGRO_TIMER* timer, ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT* font, ALLEGRO_BITMAP* image, ALLEGRO_BITMAP* mapa, ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP* ui, ALLEGRO_BITMAP* skin[], int skin_tamanho, ALLEGRO_BITMAP* skin_tiro[],ALLEGRO_AUDIO_STREAM* musica, ALLEGRO_SAMPLE* disparo){
     al_destroy_display(disp); //destroi a janela e libera a memoria
     al_destroy_timer(timer);// destroi o relogio e libera a memoria
     al_destroy_event_queue(queue);//destroi a fila de eventos e libera da memoria
     al_destroy_font(font); //destroi as fontes e libera da memoria
+    al_destroy_audio_stream(musica);
+    al_destroy_sample(disparo);
     al_destroy_bitmap(image); //destroi a imagem e libera da memoria
     al_destroy_bitmap(mapa);
     al_destroy_bitmap(ui);

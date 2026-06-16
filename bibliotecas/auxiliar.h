@@ -21,9 +21,9 @@
 
 void download_file(string url, string file_name);
 
-cJSON* read_json(const char* filename);
+cJSON* read_json(string file_name);
 
-void process_json(const char* filename);
+void process_json(string file_name);
 
 Node* new_node(Node* next, int l, string endereco);
 
@@ -35,7 +35,7 @@ void free_list(Node* node);
 
 void al_init_all();
 
-void al_destroy_all(ALLEGRO_DISPLAY* disp, ALLEGRO_TIMER* timer, ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT* font, ALLEGRO_BITMAP* image, ALLEGRO_BITMAP* mapa, ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP* ui, ALLEGRO_BITMAP* skin[],int skin_tamanho, ALLEGRO_BITMAP* skin_tiro[]);
+void al_destroy_all(ALLEGRO_DISPLAY* disp, ALLEGRO_TIMER* timer, ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT* font, ALLEGRO_BITMAP* image, ALLEGRO_BITMAP* mapa, ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP* ui, ALLEGRO_BITMAP* skin[],int skin_tamanho, ALLEGRO_BITMAP* skin_tiro[], ALLEGRO_AUDIO_STREAM* musica, ALLEGRO_SAMPLE* disparo);
 
 void al_register_all_event_source(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_TIMER* timer, ALLEGRO_DISPLAY* disp);
 

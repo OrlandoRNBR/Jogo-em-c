@@ -110,7 +110,19 @@ int main (void){
     node = insert_node(node, 4, "maps/mapa4.txt");
     node = node->next; //corrige para começar no primeiro mapa.
 
+    char url[] = "https://pokeapi.co/api/v2/pokemon/649";
+
+    download_file(url, "data.json");
+    printf("baixou o bagulho\n");
+    process_json("data.json");
+
+    ALLEGRO_SAMPLE* disparo = NULL;
+    disparo = al_load_sample("disparo.ogg");
+    ALLEGRO_AUDIO_STREAM *musica = al_load_audio_stream("audio/lavander.wav", 4, 2048);
+
     
+
+
 
     /*Carregamento dos ponteros allegro*/
     //cria a janela do jogo no padrão largura x altura 
@@ -169,6 +181,15 @@ int main (void){
         printf("ERRO: Nao foi possivel carregar o chão.png\n");
         return -1; // Encerra o programa de forma segura
     }
+    if (musica == NULL) {
+    printf("[ERRO CRÍTICO] Não foi possível carregar a música de fundo!\n");
+    return -1;
+    }
+
+    al_set_audio_stream_playmode(musica, ALLEGRO_PLAYMODE_LOOP);
+    al_attach_audio_stream_to_mixer(musica, al_get_default_mixer());
+    al_set_audio_stream_gain(musica, 0.4); // Deixa a música um pouco mais baixa
+
 
     al_register_all_event_source(queue, timer, disp);
     ALLEGRO_EVENT evento_primario; // armazena os eventos do jogo
@@ -176,6 +197,9 @@ int main (void){
 
     while(1){
         al_wait_for_event(queue, &evento_primario); //pausa o loping até algun evento aocntecer
+        al_set_audio_stream_playmode(musica, ALLEGRO_PLAYMODE_LOOP);
+        al_attach_audio_stream_to_mixer(musica, al_get_default_mixer());
+
 
         if(skin >= skin_tamanho) skin = 0; //verificação se ele selecionou um indice do vetor que existe
         
@@ -254,6 +278,10 @@ int main (void){
        
         if(tiro.ativo){//se tiro estiver ativo isso acontece
             //desloca o tiro no mapa
+            if(tiro.x == p.eixox + 16 && tiro.y == p.eixoy +16){
+                al_play_sample(disparo, 0.2, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+                
+            }
             tiro.x += tiro.velx;
             tiro.y += tiro.vely;
 
@@ -280,7 +308,7 @@ int main (void){
             printar_menu(ui, font, image, p);//printa o menu na tela
         }
     }
-
-    al_destroy_all(disp, timer, queue, font, image, mapa, parede, ui, skin_set, skin_tamanho, skin_tiro); //roda todas as finções de liberação da memoria!
+    printf("fim!\nTchau Tchau\nObrigado por Jogar!\3");
+    al_destroy_all(disp, timer, queue, font, image, mapa, parede, ui, skin_set, skin_tamanho, skin_tiro, musica, disparo); //roda todas as finções de liberação da memoria!
     free_list(node); //mata a lista encadeada
 }
