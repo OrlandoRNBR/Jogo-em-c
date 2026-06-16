@@ -188,7 +188,7 @@ int main (void){
 
     al_set_audio_stream_playmode(musica, ALLEGRO_PLAYMODE_LOOP);
     al_attach_audio_stream_to_mixer(musica, al_get_default_mixer());
-    al_set_audio_stream_gain(musica, 0.4); // Deixa a música um pouco mais baixa
+    al_set_audio_stream_gain(musica, 0.2); // Deixa a música um pouco mais baixa
 
 
     al_register_all_event_source(queue, timer, disp);
@@ -207,7 +207,7 @@ int main (void){
         ALLEGRO_BITMAP* image_tiro = skin_tiro[skin]; //seleciona o tiro
 
      // verifica se p evento que acabou de acontecer foi fechar a janela
-        if(evento_primario.type == ALLEGRO_EVENT_DISPLAY_CLOSE || evento_primario.keyboard.keycode == ALLEGRO_KEY_ESCAPE) break;
+        if(evento_primario.type == ALLEGRO_EVENT_DISPLAY_CLOSE /*|| evento_primario.keyboard.keycode == ALLEGRO_KEY_ESCAPE*/) break;
 
         if(evento_primario.type == ALLEGRO_EVENT_KEY_DOWN){
             if(evento_primario.keyboard.keycode == ALLEGRO_KEY_P) playing = true; //inicia o jogo
