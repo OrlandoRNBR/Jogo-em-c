@@ -116,29 +116,6 @@ Node* criar_mapa(int array_map[32][32],ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP*
 
 
 
-
-
-
-void printar_inimigo(ALLEGRO_BITMAP* inimigos_sprite,enemy inimigos, teclas* tecla, int si){
-    int direcao_y; // linha do spritesheet
-
-    // prioridade: define qual direção mostrar quando várias teclas estão ativas
-    if(tecla->s)      direcao_y = 0; // baixo  (frente)
-    else if(tecla->a) direcao_y = 1; // esquerda
-    else if(tecla->w) direcao_y = 2; // cima
-    else if(tecla->d) direcao_y = 3; // direita
-    else              direcao_y = 0; // parado → fica de frente
-
-    for(int i = 0; i < 5; i++){
-        if(inimigos.alive){
-            //al_draw_bitmap_region(inimigos_sprite, );
-            al_draw_bitmap_region(inimigos_sprite, inimigos.tamanho*si, inimigos.tamanho*direcao_y, inimigos.tamanho, inimigos.tamanho, inimigos.x, inimigos.y, 0);
-        }
-     }
-
-}
-
-
 void printar_tela(teclas* tecla, player* p, int *si, ALLEGRO_BITMAP* image, int array_map[32][32], tiro tiro, ALLEGRO_BITMAP* image_tiro, enemy* inimigos, ALLEGRO_BITMAP* inimigos_sprite){
     //faz toda a parte visual do jogo
      processar_teclas(tecla, p, array_map); //desloca o player na tela
@@ -148,5 +125,4 @@ void printar_tela(teclas* tecla, player* p, int *si, ALLEGRO_BITMAP* image, int 
      if(tiro.ativo){
      al_draw_bitmap(image_tiro, tiro.x, tiro.y, 0);
      }
-     al_flip_display(); //pega tudo e mostra na tela
 }

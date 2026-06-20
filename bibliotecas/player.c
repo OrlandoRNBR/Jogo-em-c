@@ -97,6 +97,29 @@ void receber_teclas (ALLEGRO_EVENT *evento_primario, int *ultima_tecla_precionad
         p->eixox = novo_x;
     }
 }
+bool colisao_tiro(int x, int y ,int array_map[32][32]){
+    /*cria a colisão do jogo verificando todas as direções do personagem*/
+
+    int tamanho = 8; 
+    //a margem serve para corrigir a colisão em relação a parede
+    int margem_cima = 2;
+    int margem_baixo = 1;
+    
+    //verifica a coordenada em rela ção ao indice do array map i = x e j = y
+    int esquerda = (x + margem_cima) / 16;
+    int direita  = (x + tamanho - margem_baixo - 1) / 16;
+    int topo     = (y + margem_cima) / 16;
+    int baixo    = (y + tamanho - margem_baixo - 1) / 16;
+
+    // verifica os 4 cantos
+    if(array_map[topo][esquerda] != 0) return true;
+    if(array_map[topo][direita]  != 0) return true;
+    if(array_map[baixo][esquerda] != 0) return true;
+    if(array_map[baixo][direita]  != 0) return true;
+
+    return false;
+}
+
 
 
 void animacao_player(int * si, teclas* tecla){ // manipula a variavel si para navegar pelo sprite do personagem

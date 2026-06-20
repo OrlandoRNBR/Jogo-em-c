@@ -8,6 +8,8 @@ typedef const char* string;
 typedef struct enemys{ //estrutura do inimigo
     bool alive;
     int x, y;
+    int frame_atual;
+    int direcao_y; 
     int tamanho;
 
 }enemy;

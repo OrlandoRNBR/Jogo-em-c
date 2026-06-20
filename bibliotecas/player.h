@@ -17,6 +17,8 @@ void receber_teclas (ALLEGRO_EVENT *evento_primario, int *ultima_tecla_precionad
 
 void processar_teclas (teclas *tecla, player* p, int array_map[32][32]); //processa o registro da função a cima
 
+bool colisao_tiro(int x, int y ,int array_map[32][32]);
+
 void animacao_player(int * si, teclas* tecla); //faz a navegação pelo spritesheet do player
 
 #endif
