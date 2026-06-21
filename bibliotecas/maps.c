@@ -16,9 +16,17 @@ void printar_chao(ALLEGRO_BITMAP* mapa,Chao chao){ //cada função dessa compoem
 
 
   /*cria o mapa com base em algum arquivo*/
-Node* criar_mapa(int array_map[32][32],ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP* mapa, Chao chao, Node* node, player* p, bool* mudou){
+Node* criar_mapa(int array_map[32][32],ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP* mapa, Chao chao, Node* node, player* p, bool* mudou, bool playing){
 
     *mudou = false;//armazena se houve mudanças no node.
+
+
+    if(!playing){
+                while(node->l != 0)
+                    node = node->next;
+                
+                *mudou = true;
+    }
 
     switch(node->l){ // verifica qual mapa esta aberto e verifica se o player esta pisando na saida dele. Coloca o player na entrada do mapa novo depos de fazer a trooca
         case 0:
@@ -86,6 +94,8 @@ Node* criar_mapa(int array_map[32][32],ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP*
     }
 
     
+            
+
     static bool primeiro_frame = true; //verifca se é o primeiro frame do jogo
     if(*mudou || primeiro_frame){//verifica as duas variveis para abrir o mapa.
     FILE* mapa_default = fopen(node->endereco, "r"); //abre o mapa com o endereço da lsita encadeada

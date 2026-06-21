@@ -7,7 +7,7 @@
 #define altura 512
 //teste do tiro do personagem pegar imagem de tiro
 #define VELOCIDADE_TIRO 8.0
-#define VELOCIDADE_INIMIGO 2.0
+#define VELOCIDADE_INIMIGO 0
 
 /*
 ======================================================================================================================
@@ -168,8 +168,8 @@ int main (void){
     node = insert_node(node, 2, "maps/mapa2.txt");
     node = insert_node(node, 3, "maps/mapa3.txt");
     node = insert_node(node, 4, "maps/mapa4.txt");
-    //node = node->next; //corrige para começar no primeiro mapa.
-    Node* first = node->next; 
+    node = node->next; //corrige para começar no primeiro mapa.
+    Node* first = node; 
 
     char url[] = "https://pokeapi.co/api/v2/pokemon/649";
 
@@ -280,8 +280,8 @@ int main (void){
         if(p.hp <= 0) playing = false;
 
         if(!playing){//verifica se o esta no menu
-           
-            node = first;
+            pontuacao = 0;
+            //node = first;
             tecla.w = false; 
             tecla.d = false;
             tecla.s = false;
@@ -362,7 +362,7 @@ int main (void){
                 inimigos[2].y = 464;
                 inimigos[2].alive = true;
 
-            if(node->next != 2){
+            if(node->l == 2){
                 inimigos[3].x = 264;
                 inimigos[3].y = 464;
                 inimigos[3].alive = true;
@@ -448,7 +448,7 @@ int main (void){
 
         if(evento_primario.type == ALLEGRO_EVENT_TIMER && al_is_event_queue_empty(queue)) {//verifica se a fila de eventos do jogo esta vazia
     
-            node = criar_mapa(array_map, parede, mapa, chao, node, &p, &mudou);//cria e printa o mapa na tela
+            node = criar_mapa(array_map, parede, mapa, chao, node, &p, &mudou, playing);//cria e printa o mapa na tela
            
             printar_tela(&tecla, &p, &si, image, array_map, tiro, image_tiro, inimigos, inimigo_sprite); //um misto de funções que fica atualizando a tela a cada tick
             printar_inimigo(&p, inimigos, 4, array_map, inimigo_sprite, &tiro, &pontuacao);
