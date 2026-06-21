@@ -16,9 +16,9 @@ void printar_chao(ALLEGRO_BITMAP* mapa,Chao chao){ //cada função dessa compoem
 
 
   /*cria o mapa com base em algum arquivo*/
-Node* criar_mapa(int array_map[32][32],ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP* mapa, Chao chao, Node* node, player* p){
+Node* criar_mapa(int array_map[32][32],ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP* mapa, Chao chao, Node* node, player* p, bool* mudou){
 
-    bool mudou = false;//armazena se houve mudanças no node.
+    *mudou = false;//armazena se houve mudanças no node.
 
     switch(node->l){ // verifica qual mapa esta aberto e verifica se o player esta pisando na saida dele. Coloca o player na entrada do mapa novo depos de fazer a trooca
         case 0:
@@ -29,7 +29,7 @@ Node* criar_mapa(int array_map[32][32],ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP*
                 printf("Mudou para o endereço: %s\n", node->endereco);
                 printf("Mudou para o mapa: %d\n", node->l);
                 printf("MUDEI NO SWITCH PARA: X=%d, Y=%d\n", p->eixox, p->eixoy);
-                mudou = true;
+                *mudou = true;
             }
             break;
             
@@ -42,7 +42,7 @@ Node* criar_mapa(int array_map[32][32],ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP*
                 printf("Mudou para o endereço: %s\n", node->endereco);
                 printf("Mudou para o mapa: %d\n", node->l);
                 printf("MUDEI NO SWITCH PARA: X=%d, Y=%d\n", p->eixox, p->eixoy);
-                mudou = true;
+                *mudou = true;
             }
             break;
         case 2:
@@ -53,7 +53,7 @@ Node* criar_mapa(int array_map[32][32],ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP*
                 printf("Mudou para o endereço: %s\n", node->endereco);
                 printf("Mudou para o mapa: %d\n", node->l);
                 printf("MUDEI NO SWITCH PARA: X=%d, Y=%d\n", p->eixox, p->eixoy);
-                mudou = true;
+                *mudou = true;
             }
             break;
 
@@ -65,7 +65,7 @@ Node* criar_mapa(int array_map[32][32],ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP*
                 printf("Mudou para o endereço: %s\n", node->endereco);
                 printf("Mudou para o mapa: %d\n", node->l);
                 printf("MUDEI NO SWITCH PARA: X=%d, Y=%d\n", p->eixox, p->eixoy);
-                mudou = true;
+                *mudou = true;
             }
             break;
         
@@ -77,7 +77,7 @@ Node* criar_mapa(int array_map[32][32],ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP*
                 printf("Mudou para o endereço: %s\n", node->endereco);
                 printf("Mudou para o mapa: %d\n", node->l);
                 printf("MUDEI NO SWITCH PARA: X=%d, Y=%d\n", p->eixox, p->eixoy);
-                mudou = true;
+                *mudou = true;
             }
             break;
 
@@ -87,7 +87,7 @@ Node* criar_mapa(int array_map[32][32],ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP*
 
     
     static bool primeiro_frame = true; //verifca se é o primeiro frame do jogo
-    if(mudou || primeiro_frame){//verifica as duas variveis para abrir o mapa.
+    if(*mudou || primeiro_frame){//verifica as duas variveis para abrir o mapa.
     FILE* mapa_default = fopen(node->endereco, "r"); //abre o mapa com o endereço da lsita encadeada
         if(mapa_default){//se o mapa abriu lê e armazena no array map
             for(int i = 0;i < 32;i++){

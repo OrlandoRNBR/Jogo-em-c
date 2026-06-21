@@ -7,7 +7,7 @@
 #define altura 512
 //teste do tiro do personagem pegar imagem de tiro
 #define VELOCIDADE_TIRO 8.0
-#define VELOCIDADE_INIMIGO 3.7
+#define VELOCIDADE_INIMIGO 2.0
 
 /*
 ======================================================================================================================
@@ -55,7 +55,7 @@ bool colisao_enemy(int x, int y, int array_map[32][32], int tamanho) {
     return false;
 }
 
-void enemy_action(player* p, enemy* i, int n, int array_map[32][32], tiro* tiro) {
+void enemy_action(player* p, enemy* i, int n, int array_map[32][32], tiro* tiro, int* pontuacao) {
     if (i[n].alive) { 
 
         if (tiro->ativo) { // Só checa se o tiro realmente existir na tela
@@ -68,6 +68,7 @@ void enemy_action(player* p, enemy* i, int n, int array_map[32][32], tiro* tiro)
             {
                 i[n].alive = false; // O inimigo morre!
                 tiro->ativo = false;   // O tiro some ao impactar (para não atravessar e matar outros)
+                *pontuacao += 1;
                 printf("Inimigo abatido pelo tiro!\n");
             }
         }
@@ -109,7 +110,7 @@ void animacao_inimigo(player* p, enemy* i, int n) {
     }
 }
 
-void printar_inimigo(player* p, enemy* i, int n, int array_map[32][32], ALLEGRO_BITMAP* inimigo, tiro* tiro) {
+void printar_inimigo(player* p, enemy* i, int n, int array_map[32][32], ALLEGRO_BITMAP* inimigo, tiro* tiro,int* pontuacao) {
     for (int j = 0; j < n; j++) {
         if (i[j].alive) {
             if (abs(p->eixox - i[j].x) > abs(p->eixoy - i[j].y)) {
@@ -121,7 +122,7 @@ void printar_inimigo(player* p, enemy* i, int n, int array_map[32][32], ALLEGRO_
             }
 
             animacao_inimigo(p, i, j);
-            enemy_action(p, i, j, array_map, tiro);
+            enemy_action(p, i, j, array_map, tiro, pontuacao);
 
             if (inimigo != NULL) {
                 al_draw_bitmap_region(inimigo, 
@@ -141,21 +142,25 @@ int main (void){
     Chao chao = {0,0,256, 128};//informações do fundo do mapa
     int ultima_tecla_precionada = 0;
     int si = 0;
+    int pontuacao = 0;
+    char hp_num[10];
+    char str[10];
     /*teclas nessa ordem w, d,s,a,1,2,3,0.*/
     teclas tecla = {false, false, false, false, false, false, false, false, false};
     int array_map[32][32];
+    char ponto_texto[] = "pontuação: ";
+    char hp_texto[]= "hp: ";
     
     bool playing = false;
+    bool mudou = false;
     int x_tiro, y_tiro; 
-    enemy inimigos[5] = { //inicialização de um vetor de inimigos
+    enemy inimigos[4] = { //inicialização de um vetor de inimigos
         {true, 470, 32, 0, 0, 32}, // alive, x, y, frame_atual, direcao_y, tamanho
         {true, 26, 26, 0, 0, 32},
-        {true, 345, 170, 0, 0, 32},
-        {false, 26, 26, 0, 0, 32},
-        {false, 26, 26, 0, 0, 32}
+        {true, 32, 470, 0, 0, 32},
+        {true, 448, 448, 0, 0, 32},
     };
 
-    int se = 0;
 
     Node* node = NULL; //inicialização da lista encadeada com um id numerico e o endereço do mapa.
     node = insert_node(node, 0, "maps/mapa_default.txt");
@@ -163,7 +168,8 @@ int main (void){
     node = insert_node(node, 2, "maps/mapa2.txt");
     node = insert_node(node, 3, "maps/mapa3.txt");
     node = insert_node(node, 4, "maps/mapa4.txt");
-    node = node->next; //corrige para começar no primeiro mapa.
+    //node = node->next; //corrige para começar no primeiro mapa.
+    Node* first = node->next; 
 
     char url[] = "https://pokeapi.co/api/v2/pokemon/649";
 
@@ -255,7 +261,9 @@ int main (void){
         al_wait_for_event(queue, &evento_primario); //pausa o loping até algun evento aocntecer
         al_set_audio_stream_playmode(musica, ALLEGRO_PLAYMODE_LOOP);
         al_attach_audio_stream_to_mixer(musica, al_get_default_mixer());
-
+        
+        sprintf(str, "%d", pontuacao);
+        sprintf(hp_num, "%d", p.hp);
 
         if(skin >= skin_tamanho) skin = 0; //verificação se ele selecionou um indice do vetor que existe
         
@@ -273,6 +281,43 @@ int main (void){
 
         if(!playing){//verifica se o esta no menu
            
+            node = first;
+            tecla.w = false; 
+            tecla.d = false;
+            tecla.s = false;
+            tecla.a = false;
+           
+            p.eixox = 256;
+            p.eixoy = 1;
+            p.hp = 3;
+            p.tamanho = 32;
+
+            inimigos[0].x = 464;
+            inimigos[0].y = 32;
+
+            inimigos[1].x = 17;
+            inimigos[1].y = 17;
+
+            inimigos[2].x = 32;
+            inimigos[2].y = 464;
+
+            inimigos[3].x = 464;
+            inimigos[3].y = 464;
+
+            if(!inimigos[0].alive){
+                inimigos[0].alive = true;
+            }
+            if(!inimigos[1].alive){
+                inimigos[1].alive = true;
+            }
+            if(!inimigos[2].alive){
+                inimigos[2].alive = true;
+            }
+            if(!inimigos[3].alive){
+                inimigos[3].alive = true;
+            }
+            
+
             //verifica se você esta clicando no primeiro botão do menu
             if(evento_primario.mouse.x > 152 && evento_primario.mouse.y > 187 && evento_primario.mouse.x < 364 && evento_primario.mouse.y < 222 ){
                 if(evento_primario.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
@@ -301,6 +346,55 @@ int main (void){
         if(playing){
         /*recebe as teclas usadas no jogo e declara como true ou false*/
        
+        if(mudou){
+
+                inimigos[0].x = 464;
+                inimigos[0].y = 32;
+                inimigos[0].alive = true;
+            
+          
+                inimigos[1].x = 17;
+                inimigos[1].y = 17;
+                inimigos[1].alive = true;
+      
+  
+                inimigos[2].x = 32;
+                inimigos[2].y = 464;
+                inimigos[2].alive = true;
+
+            if(node->next != 2){
+                inimigos[3].x = 264;
+                inimigos[3].y = 464;
+                inimigos[3].alive = true;
+            }else{
+                inimigos[3].x = 464;
+                inimigos[3].y = 464;
+                inimigos[3].alive = true;
+            }
+        
+        }else if(!mudou){
+            if(!inimigos[0].alive){
+                inimigos[0].x = 464;
+                inimigos[0].y = 32;
+                inimigos[0].alive = true;
+            }
+            if(!inimigos[1].alive){
+                inimigos[1].x = 17;
+                inimigos[1].y = 17;
+                inimigos[1].alive = true;
+            }
+            if(!inimigos[2].alive){
+                inimigos[2].x = 32;
+                inimigos[2].y = 464;
+                inimigos[2].alive = true;
+            }
+            if(!inimigos[3].alive){
+                inimigos[3].x = 464;
+                inimigos[3].y = 464;
+                inimigos[3].alive = true;
+            }
+        }
+
         receber_teclas(&evento_primario, &ultima_tecla_precionada, &tecla); //recebe as teclas
       
         if(evento_primario.type == ALLEGRO_EVENT_KEY_DOWN) //verifica se alguma tecla foi precionada
@@ -354,10 +448,17 @@ int main (void){
 
         if(evento_primario.type == ALLEGRO_EVENT_TIMER && al_is_event_queue_empty(queue)) {//verifica se a fila de eventos do jogo esta vazia
     
-            node = criar_mapa(array_map, parede, mapa, chao, node, &p);//cria e printa o mapa na tela
+            node = criar_mapa(array_map, parede, mapa, chao, node, &p, &mudou);//cria e printa o mapa na tela
            
             printar_tela(&tecla, &p, &si, image, array_map, tiro, image_tiro, inimigos, inimigo_sprite); //um misto de funções que fica atualizando a tela a cada tick
-            printar_inimigo(&p, inimigos, 5, array_map, inimigo_sprite, &tiro);
+            printar_inimigo(&p, inimigos, 4, array_map, inimigo_sprite, &tiro, &pontuacao);
+            if(playing){
+            al_draw_text(font, al_map_rgb(255, 255, 255), 20, 16, 0, ponto_texto);
+            al_draw_text(font, al_map_rgb(255, 255, 255), 180, 16, 0, str);
+
+            al_draw_text(font, al_map_rgb(255, 255, 255), 220, 16, 0, hp_texto);
+            al_draw_text(font, al_map_rgb(255, 255, 255), 280, 16, 0, hp_num);
+            }
             al_flip_display(); //pega tudo e mostra na tela
         }
         }else{
