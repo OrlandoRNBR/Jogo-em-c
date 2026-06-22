@@ -16,6 +16,7 @@
 #include "player.h"
 #include "maps.h"
 #include "estructuras.h"
+#include "enemy.h"
 
 #define CRIES_PATH "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/"
 

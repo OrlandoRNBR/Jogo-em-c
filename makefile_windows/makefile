@@ -7,7 +7,7 @@ CFLAGS = -Wall -Wextra -std=gnu11 -mcmodel=medium -I./bibliotecas -D__USE_MINGW_
 LDLIBS = -lallegro -lallegro_font -lallegro_ttf -lallegro_image -lallegro_primitives -lallegro_acodec -lallegro_audio -lcjson -lcurl
 
 # Fontes e Objetos
-SRCS = main.c bibliotecas/player.c bibliotecas/auxiliar.c bibliotecas/maps.c
+SRCS = main.c bibliotecas/player.c bibliotecas/auxiliar.c bibliotecas/maps.c bibliotecas/enemy.c
 OBJS = $(SRCS:.c=.o)
 
 # Alvo principal

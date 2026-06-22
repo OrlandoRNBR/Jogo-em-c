@@ -7,7 +7,7 @@
 #define altura 512
 //teste do tiro do personagem pegar imagem de tiro
 #define VELOCIDADE_TIRO 8.0
-#define VELOCIDADE_INIMIGO 0
+#define VELOCIDADE_INIMIGO 2.0
 
 /*
 ======================================================================================================================
@@ -21,10 +21,6 @@
 ヽ＿＿＿＞､＿＿_／
     ｜( 王 ﾉ〈   (\__/)
     /ﾐ`ー―彡\   (•ㅅ•)bem loko
-
-
-O jogo ta documentado então da uma lida rapida pelo menos no main.c ja tem a colisão dos inimigos e
-um struct se for dar uma olhada ta la na biblioteca estruturas.h o inimigo não precisa ter hp ele morre com um tiro só
 ======================================================================================================================
 */
 
@@ -35,107 +31,12 @@ um struct se for dar uma olhada ta la na biblioteca estruturas.h o inimigo não 
 
 
 
-
-bool colisao_enemy(int x, int y, int array_map[32][32], int tamanho) {
-    int margem_cima = 4;
-    int margem_baixo = 4;
-    
-    int esquerda = (x + margem_cima) / 16;
-    int direita  = (x + tamanho - margem_baixo - 1) / 16;
-    int topo     = (y + margem_cima) / 16;
-    int baixo    = (y + tamanho - margem_baixo - 1) / 16;
-
-    if (topo < 0 || baixo >= 32 || esquerda < 0 || direita >= 32) return true;
-
-    if (array_map[topo][esquerda] != 0) return true;
-    if (array_map[topo][direita]  != 0) return true;
-    if (array_map[baixo][esquerda] != 0) return true;
-    if (array_map[baixo][direita]  != 0) return true;
-
-    return false;
-}
-
-void enemy_action(player* p, enemy* i, int n, int array_map[32][32], tiro* tiro, int* pontuacao) {
-    if (i[n].alive) { 
-
-        if (tiro->ativo) { // Só checa se o tiro realmente existir na tela
-            int tamanho_tiro = 8; // Conforme o +8 que você usou no seu if
-            
-            if (tiro->x < i[n].x + i[n].tamanho &&  // Esquerda do tiro < Direita do inimigo
-                tiro->x + tamanho_tiro > i[n].x &&  // Direita do tiro > Esquerda do inimigo
-                tiro->y < i[n].y + i[n].tamanho &&  // Topo do tiro < Base do inimigo
-                tiro->y + tamanho_tiro > i[n].y)    // Base do tiro > Topo do inimigo
-            {
-                i[n].alive = false; // O inimigo morre!
-                tiro->ativo = false;   // O tiro some ao impactar (para não atravessar e matar outros)
-                *pontuacao += 1;
-                printf("Inimigo abatido pelo tiro!\n");
-            }
-        }
-
-
-        // Correção das condições: adicionado o ! antes de colisao_enemy
-        if (p->eixox < i[n].x) {
-            if (!colisao_enemy(i[n].x - VELOCIDADE_INIMIGO, i[n].y, array_map, i[n].tamanho)) {
-                i[n].x -= VELOCIDADE_INIMIGO; 
-            }
-        } else if (p->eixox > i[n].x) {
-            if (!colisao_enemy(i[n].x + VELOCIDADE_INIMIGO, i[n].y, array_map, i[n].tamanho)) {
-                i[n].x += VELOCIDADE_INIMIGO;
-            }
-        }
-
-        if (p->eixoy < i[n].y) {
-            if (!colisao_enemy(i[n].x, i[n].y - VELOCIDADE_INIMIGO, array_map, i[n].tamanho)) {
-                i[n].y -= VELOCIDADE_INIMIGO; 
-            }
-        } else if (p->eixoy > i[n].y) {
-            if (!colisao_enemy(i[n].x, i[n].y + VELOCIDADE_INIMIGO, array_map, i[n].tamanho)) {
-                i[n].y += VELOCIDADE_INIMIGO;
-            }
-        }
-
-        if (abs(p->eixox - i[n].x) < 16 && abs(p->eixoy - i[n].y) < 16) {
-            p->hp--;
-            i[n].alive = false; 
-        }
-    }
-}
-
-void animacao_inimigo(player* p, enemy* i, int n) { 
-    if (i[n].x != p->eixox || i[n].y != p->eixoy) {
-        i[n].frame_atual = (i[n].frame_atual + 1) % 4; // Geralmente sheets têm 4 frames
-    } else {
-        i[n].frame_atual = 0;
-    }
-}
-
-void printar_inimigo(player* p, enemy* i, int n, int array_map[32][32], ALLEGRO_BITMAP* inimigo, tiro* tiro,int* pontuacao) {
-    for (int j = 0; j < n; j++) {
-        if (i[j].alive) {
-            if (abs(p->eixox - i[j].x) > abs(p->eixoy - i[j].y)) {
-                if (i[j].x > p->eixox)      i[j].direcao_y = 1; // Esquerda
-                else                        i[j].direcao_y = 3; // Direita
-            } else {
-                if (i[j].y < p->eixoy)      i[j].direcao_y = 0; // Baixo (Frente)
-                else                        i[j].direcao_y = 2; // Cima (Costas)
-            }
-
-            animacao_inimigo(p, i, j);
-            enemy_action(p, i, j, array_map, tiro, pontuacao);
-
-            if (inimigo != NULL) {
-                al_draw_bitmap_region(inimigo, 
-                                      i[j].tamanho * i[j].frame_atual, 
-                                      i[j].tamanho * i[j].direcao_y, 
-                                      i[j].tamanho, i[j].tamanho, 
-                                      i[j].x, i[j].y, 0);
-            }
-        }
-    }
-}
 int main (void){
-    al_init_all(); //todos os inits em uma unica função!
+
+    bool audio = true;
+    fflush(stdout);
+
+    al_init_all(&audio); //todos os inits em uma unica função!
 
     player p = {256, 1, 5, 3, 32}; //declaração do player posição eixo x, posição eixo y, vidas
     tiro tiro = {0, 0, 0, 0, false};
@@ -143,13 +44,11 @@ int main (void){
     int ultima_tecla_precionada = 0;
     int si = 0;
     int pontuacao = 0;
-    char hp_num[10];
     char str[10];
     /*teclas nessa ordem w, d,s,a,1,2,3,0.*/
     teclas tecla = {false, false, false, false, false, false, false, false, false};
     int array_map[32][32];
     char ponto_texto[] = "pontuação: ";
-    char hp_texto[]= "hp: ";
     
     bool playing = false;
     bool mudou = false;
@@ -169,7 +68,7 @@ int main (void){
     node = insert_node(node, 3, "maps/mapa3.txt");
     node = insert_node(node, 4, "maps/mapa4.txt");
     node = node->next; //corrige para começar no primeiro mapa.
-    Node* first = node; 
+    //Node* first = node; 
 
     char url[] = "https://pokeapi.co/api/v2/pokemon/649";
 
@@ -178,10 +77,13 @@ int main (void){
     process_json("data.json");
 
     ALLEGRO_SAMPLE* disparo = NULL;
-    disparo = al_load_sample("disparo.ogg");
+    disparo = al_load_sample("649.ogg");
     ALLEGRO_AUDIO_STREAM *musica = al_load_audio_stream("audio/lavander.wav", 4, 2048);
 
-    
+    if(!audio){
+        musica = NULL;
+        disparo = NULL;
+    }
 
 
 
@@ -197,6 +99,7 @@ int main (void){
     }   
 
     ALLEGRO_BITMAP* inimigo_sprite = al_load_bitmap("sprites/vampires.png");
+    ALLEGRO_BITMAP* hp_image = al_load_bitmap("sprites/heart.png");
 
     /*carregamento dos sprites do jogo*/
     int skin = 0;
@@ -244,14 +147,16 @@ int main (void){
     }
     if (musica == NULL) {
     printf("[ERRO CRÍTICO] Não foi possível carregar a música de fundo!\n");
-    return -1;
     }
 
-    al_set_audio_stream_playmode(musica, ALLEGRO_PLAYMODE_LOOP);
-    al_attach_audio_stream_to_mixer(musica, al_get_default_mixer());
-    al_set_audio_stream_gain(musica, 0.2
-    ); // Deixa a música um pouco mais baixa
-
+    if (musica != NULL) {
+        al_set_audio_stream_playmode(musica, ALLEGRO_PLAYMODE_LOOP);
+        al_attach_audio_stream_to_mixer(musica, al_get_default_mixer());
+        al_set_audio_stream_gain(musica, 0.2); // Deixa a música um pouco mais baixa
+    } else {
+        printf("[AVISO] Jogo iniciando sem musica de fundo devido a limitaçoes de hardware.\n");
+        fflush(stdout);
+    }
 
     al_register_all_event_source(queue, timer, disp);
     ALLEGRO_EVENT evento_primario; // armazena os eventos do jogo
@@ -259,11 +164,13 @@ int main (void){
 
     while(1){
         al_wait_for_event(queue, &evento_primario); //pausa o loping até algun evento aocntecer
+        
+        if(audio){
         al_set_audio_stream_playmode(musica, ALLEGRO_PLAYMODE_LOOP);
         al_attach_audio_stream_to_mixer(musica, al_get_default_mixer());
-        
+        }
+
         sprintf(str, "%d", pontuacao);
-        sprintf(hp_num, "%d", p.hp);
 
         if(skin >= skin_tamanho) skin = 0; //verificação se ele selecionou um indice do vetor que existe
         
@@ -288,7 +195,7 @@ int main (void){
             tecla.a = false;
            
             p.eixox = 256;
-            p.eixoy = 1;
+            p.eixoy = 17;
             p.hp = 3;
             p.tamanho = 32;
 
@@ -451,14 +358,24 @@ int main (void){
             node = criar_mapa(array_map, parede, mapa, chao, node, &p, &mudou, playing);//cria e printa o mapa na tela
            
             printar_tela(&tecla, &p, &si, image, array_map, tiro, image_tiro, inimigos, inimigo_sprite); //um misto de funções que fica atualizando a tela a cada tick
-            printar_inimigo(&p, inimigos, 4, array_map, inimigo_sprite, &tiro, &pontuacao);
-            if(playing){
+            printar_inimigo(&p, inimigos, 4, array_map, inimigo_sprite, &tiro, &pontuacao, VELOCIDADE_INIMIGO);
+
             al_draw_text(font, al_map_rgb(255, 255, 255), 20, 16, 0, ponto_texto);
             al_draw_text(font, al_map_rgb(255, 255, 255), 180, 16, 0, str);
 
-            al_draw_text(font, al_map_rgb(255, 255, 255), 220, 16, 0, hp_texto);
-            al_draw_text(font, al_map_rgb(255, 255, 255), 280, 16, 0, hp_num);
+            if(p.hp == 3) {
+                al_draw_bitmap(hp_image, 496, 1, 0);
+                al_draw_bitmap(hp_image, 480, 1, 0);
+                al_draw_bitmap(hp_image, 464, 1, 0);
             }
+
+            if(p.hp == 2){ 
+                al_draw_bitmap(hp_image, 496, 1, 0);
+                al_draw_bitmap(hp_image, 480, 1, 0);
+            }
+            if(p.hp == 1) 
+                al_draw_bitmap(hp_image, 464, 1, 0);
+
             al_flip_display(); //pega tudo e mostra na tela
         }
         }else{

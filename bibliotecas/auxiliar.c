@@ -56,7 +56,6 @@ void process_json(string file_name){
    const char* cries_filename = url_crie + strlen(CRIES_PATH);//+strlen("latest/");
    printf("arquivo de audio: %s\n", cries_filename);
    download_file(url_crie, cries_filename);
-    rename("649.ogg", "disparo.ogg");
    cJSON_Delete(json);
 }
 
@@ -105,17 +104,41 @@ void free_list(Node* node) {//remove todos os nós
        node = remove_node_after(node);
 }
 
-void al_init_all(){
-    al_init(); //inicia a biblioteca do alegro
-    al_init_font_addon(); //prepara a memória para receber fontes costumizadas
-    al_init_ttf_addon();// permite o alegro renderizar fontes de arquivos ttf
-    al_init_image_addon(); //permite a biblioteca alegro renderizar bitmaps
+
+void al_init_all(bool * audio){
+    if(al_init()) printf("Allegro inicializado\n"); //inicia a biblioteca do alegro
+
+    if(al_init_font_addon()) printf("allegro font inicializado\n"); //prepara a memória para receber fontes costumizadas
+
+    if(al_init_ttf_addon()) printf("allegro ttf inicilisado\n");// permite o alegro renderizar fontes de arquivos ttf
+
+    if(al_init_image_addon()) printf("allegro image inicialisado\n"); //permite a biblioteca alegro renderizar bitmaps
+
     al_install_keyboard(); //informa o sistema operacional que o programa vai capiturar teclas
+ 
     al_install_mouse(); //informa o codigo que ele precisa olhar as informações do mouse
-    al_init_primitives_addon();
-    al_install_audio();
-    al_init_acodec_addon();
-    al_reserve_samples(5);
+
+    if (al_init_primitives_addon()) printf("allegro primitives inicialisado\n");
+
+    // Tenta inicializar o codec de áudio padrão
+if (al_init_acodec_addon()) {
+    printf("Codec de audio inicializado com sucesso.\n");
+}
+// Tenta inicializar o instalador de áudio
+    if (al_install_audio()) {
+        printf("Sistema de som instalado com sucesso.\n");
+    
+    // SÓ RESERVA OS SAMPLES SE O SISTEMA DE SOM FOI INSTALADO!
+        if (al_reserve_samples(5)) {
+            printf("Canais de audio reservados com sucesso.\n");
+        } else {
+            printf("AVISO: Nao foi possivel reservar os canais de audio.\n");
+        }
+    } else {
+        printf("[AVISO CRITICO]: O PC nao possui dispositivo de som ativo. O jogo rodara SEM AUDIO.\n");
+        *audio = false;
+    }
+    fflush(stdout);
 }
 
 void al_destroy_all(ALLEGRO_DISPLAY* disp, ALLEGRO_TIMER* timer, ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT* font, ALLEGRO_BITMAP* image, ALLEGRO_BITMAP* mapa, ALLEGRO_BITMAP* parede[], ALLEGRO_BITMAP* ui, ALLEGRO_BITMAP* skin[], int skin_tamanho, ALLEGRO_BITMAP* skin_tiro[],ALLEGRO_AUDIO_STREAM* musica, ALLEGRO_SAMPLE* disparo){
